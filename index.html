@@ -68,6 +68,8 @@
   tr:last-child td{border-bottom:none}
   tr.pres td{background:var(--ok-soft)}
   td.nome{font-weight:600}
+  .just{display:inline-block;margin:4px 0 2px;padding:3px 9px;border-radius:999px;background:#fef3c7;color:#92400e;border:1px solid #f59e0b;font-size:.78rem;font-weight:700}
+  td.nome .just{display:block;width:fit-content;margin-top:4px}
   .fun{display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);margin-bottom:2px}
   .mono{font-variant-numeric:tabular-nums;white-space:nowrap}
   a{color:var(--accent);text-decoration:none}
@@ -304,7 +306,7 @@
       <span class="prog ">0/4 presentes</span></h2>
     <table><thead><tr><th>Presença</th><th>Nome</th><th>Telefone</th></tr></thead><tbody><tr class="">
         <td class="p" data-l=""><button class="pbtn " onclick="toggle('781-1')">Marcar chegada</button><span class="pst nao">Ausente</span></td>
-        <td class="nome" data-l=""><span class="fun">Presidente</span>PAULA JANINE BRANDAO CANDIDO</td>
+        <td class="nome" data-l=""><span class="fun">Presidente</span>PAULA JANINE BRANDAO CANDIDO<span class="just">⚕️ Faltará por motivo de saúde</span></td>
         <td class="mono" data-l="Tel.">
           <a href="tel:+5592995055354">(92) 99505-5354</a>
           <a class="wa" href="https://wa.me/5592995055354" target="_blank" rel="noopener">WhatsApp</a>
@@ -470,6 +472,9 @@ const SECS=[...new Set(D.map(d=>d.sec))];
 /* função na mesa: segue a ordem da lista dentro de cada seção */
 const FUNCOES=["Presidente","1º Mesário","2º Mesário","Secretário"];
 SECS.forEach(s=>D.filter(d=>d.sec===s).forEach((d,i)=>{d.fun=FUNCOES[i]||"";d.id=s+"-"+(i+1);}));
+/* faltas já comunicadas (selo no mesário): {código: motivo} */
+const JUST={"781-1":"Faltará por motivo de saúde"};
+D.forEach(d=>d.just=JUST[d.id]||"");
 
 /* ---------- coordenadores: [nome, CPF, telefone, seção] ----------
    Para trocar a distribuição, basta mudar a seção na última coluna (mais de uma: "752,766"). */
@@ -666,7 +671,7 @@ function render(){
       const p=P[d.id];
       html+=`<tr class="${p?"pres":""}">
         <td class="p" data-l=""><button class="pbtn ${p?"on":""}" onclick="toggle('${d.id}')">${p?"✓ Chegou "+hora(p):"Marcar chegada"}</button><span class="pst ${p?"sim":"nao"}">${p?"Presente · "+hora(p):"Ausente"}</span></td>
-        <td class="nome" data-l=""><span class="fun">${d.fun}</span>${hi(d.nome,terms)}${d.obs?`<span class="warn">⚠ ${esc_(d.obs)}</span>`:""}</td>
+        <td class="nome" data-l=""><span class="fun">${d.fun}</span>${hi(d.nome,terms)}${d.just?`<span class="just">⚕️ ${esc_(d.just)}</span>`:""}${d.obs?`<span class="warn">⚠ ${esc_(d.obs)}</span>`:""}</td>
         <td class="mono" data-l="Tel.">
           <a href="tel:+55${d.tel}">${fmtTel(d.tel)}</a>
           <a class="wa" href="https://wa.me/55${d.tel}" target="_blank" rel="noopener">WhatsApp</a>
@@ -840,17 +845,17 @@ async function gerarImagem(){
         c.fillStyle="#44515c"; c.font="28px "+F;
         c.fillText(`Coordenação: ${coordTxt(b.g.s)}`,PAD,yb+124);
       }else if(b.type==="p"){
-        const p=P[b.d.id], col=p?OK:NO;
-        c.fillStyle=p?OKS:NOS; c.fillRect(PAD-16,yb+8,W-2*PAD+32,b.h-16);
+        const p=P[b.d.id], col=p?OK:(b.d.just?"#b45309":NO);
+        c.fillStyle=p?OKS:(b.d.just?"#fff7e6":NOS); c.fillRect(PAD-16,yb+8,W-2*PAD+32,b.h-16);
         c.fillStyle=col; c.fillRect(PAD-16,yb+8,10,b.h-16);
         let yy=yb+24; const X=PAD+16;
-        c.fillStyle="#1f4f5c"; c.font="bold 26px "+F; c.fillText(b.d.fun.toUpperCase(),X,yy+28); yy+=36;
+        c.fillStyle="#1f4f5c"; c.font="bold 26px "+F; c.fillText(b.d.fun.toUpperCase(),X,yy+28); if(b.d.just){const w0=c.measureText(b.d.fun.toUpperCase()+"  ").width;c.fillStyle="#b45309";c.fillText("⚕ "+b.d.just.toUpperCase(),X+w0,yy+28);} yy+=36;
         c.fillStyle="#1d2730"; c.font=fName;
         b.nl.forEach(l=>{c.fillText(l,X,yy+38); yy+=46;});
         c.font=fData; c.fillStyle="#44515c";
         c.fillText(`Tel.: ${fmtTel(b.d.tel)}`,X,yy+34);
         // selo de situação
-        const txt=p?`✓ PRESENTE ${hora(p)}`:"✗ AUSENTE";
+        const txt=p?`✓ PRESENTE ${hora(p)}`:(b.d.just?"✗ FALTA JUSTIFICADA":"✗ AUSENTE");
         c.font="bold 28px "+F; const w=c.measureText(txt).width+32;
         c.fillStyle=col; rr(c,W-PAD-w,yy+2,w,44,22); c.fill();
         c.fillStyle="#fff"; c.fillText(txt,W-PAD-w+16,yy+34);

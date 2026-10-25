@@ -130,6 +130,10 @@ a{color:var(--accent);text-decoration:none}
 .fun{display:block;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--accent)}
 .nome{display:block;font-size:.98rem;margin:1px 0 3px;padding-right:110px}
 .wa{font-size:.8rem;font-weight:600}
+.just{display:inline-block;margin:2px 0 4px;padding:3px 9px;border-radius:999px;background:#fef3c7;color:#92400e;border:1px solid #f59e0b;font-size:.76rem;font-weight:700}
+.m:has(.just):not(:has(.ck:checked)){border-left-color:#d97706}
+body:has(#mi:checked) .m:has(.just):not(:has(.ck:checked)) .bt::after{content:"✗ FALTA JUSTIFICADA";background:#b45309}
+@media print{.m:has(.just):not(:has(.ck:checked)) .bt::after{content:"Falta justificada";border-color:#b45309;color:#b45309}}
 .dd{display:block;font-size:.84rem;color:var(--muted);font-variant-numeric:tabular-nums}
 .bt{position:absolute;right:10px;top:10px}
 .bt::after{content:"Marcar chegada";display:inline-block;border:2px solid var(--no);background:var(--nos);color:var(--no);border-radius:8px;padding:5px 8px;font-size:.78rem;font-weight:700}
@@ -273,7 +277,7 @@ body:has(#mi:checked) .mapa{display:none}
 <span class="dd">Tel.: <a href="tel:+5592992764410">(92) 99276-4410</a> &nbsp;<a class="wa" href="https://wa.me/5592992764410">WhatsApp</a></span></label><label class="m"><input type="checkbox" class="ck"><span class="bt"></span>
 <span class="fun">Secretário</span><b class="nome">GABRIELLE RIBEIRO ARAUJO</b>
 <span class="dd">Tel.: <a href="tel:+5592992418563">(92) 99241-8563</a> &nbsp;<a class="wa" href="https://wa.me/5592992418563">WhatsApp</a></span></label></div><div class="sp"></div></section><section class="sec s781"><h2>Seção 781 <span class="tag Ulisses">Ulisses</span></h2><div class="coord">👤 Alesson Miranda Pereira · <a href="tel:+5592992983968">(92) 99298-3968</a></div><div class="lista"><label class="m"><input type="checkbox" class="ck"><span class="bt"></span>
-<span class="fun">Presidente</span><b class="nome">PAULA JANINE BRANDAO CANDIDO</b>
+<span class="fun">Presidente</span><b class="nome">PAULA JANINE BRANDAO CANDIDO</b><span class="just">⚕️ Faltará por motivo de saúde</span>
 <span class="dd">Tel.: <a href="tel:+5592995055354">(92) 99505-5354</a> &nbsp;<a class="wa" href="https://wa.me/5592995055354">WhatsApp</a></span></label><label class="m"><input type="checkbox" class="ck"><span class="bt"></span>
 <span class="fun">1º Mesário</span><b class="nome">ROBERTA ALBUQUERQUE DUTRA</b>
 <span class="dd">Tel.: <a href="tel:+5592995349670">(92) 99534-9670</a> &nbsp;<a class="wa" href="https://wa.me/5592995349670">WhatsApp</a></span></label><label class="m"><input type="checkbox" class="ck"><span class="bt"></span>
