@@ -45,6 +45,10 @@
   .controls.focsec #cooChips,.controls.focsec #escChips{display:none}
   .controls.focsec #secChips .chip:not(.on){display:none}
   .controls.focsec #secChips .trocar{display:inline-block}
+  /* escola e situação: ao escolher, recolhe as outras opções */
+  .row.fx .chip:not(.on){display:none}
+  .row.fx .trocar{display:inline-block}
+  .count{order:100}
   .count{margin-left:auto;font-size:.88rem;color:var(--muted)}
   main{max-width:1000px;margin:0 auto;padding:12px 16px 40px}
   .sec{margin-top:18px}
@@ -153,8 +157,8 @@
   <input id="q" class="search" type="search" placeholder="Buscar por nome (ex.: maria, santos)…" autocomplete="off">
   <div class="row" id="cooChips"><span class="lbl">Coord.</span><button class="trocar" onclick="selCoord('')">✕ Trocar coordenador</button></div>
   <div class="row" id="secChips"><span class="lbl">Seção</span><button class="trocar" onclick="selSec('')">✕ Trocar seção</button></div>
-  <div class="row" id="escChips"><span class="lbl">Escola</span></div>
-  <div class="row" id="stChips"><span class="lbl">Situação</span><span class="count" id="count"></span></div>
+  <div class="row" id="escChips"><span class="lbl">Escola</span><button class="trocar" onclick="selFiltro('escChips','')">✕ Trocar escola</button></div>
+  <div class="row" id="stChips"><span class="lbl">Situação</span><button class="trocar" onclick="selFiltro('stChips','')">✕ Trocar situação</button><span class="count" id="count"></span></div>
 </div>
 
 <main id="out"><section class="sec"><h2>Seção 667 <span class="tag Juracy">Juracy</span>
@@ -526,8 +530,8 @@ function mkChips(box,items,get,set){
 }
 mkChips("cooChips",[["","Todos"],...C.map((c,i)=>[String(i),curto(c.nome)])],()=>coo,v=>{coo=v;modoCoord();});
 mkChips("secChips",[["","Todas"],...SECS.map(s=>[s,s])],()=>sec,v=>{sec=v;modoSec();});
-mkChips("escChips",[["","Todas"],["Juracy","Juracy"],["Ulisses","Ulisses"],["none","Não informada"]],()=>esc,v=>esc=v);
-mkChips("stChips",[["","Todos"],["aus","Ausentes"],["pres","Presentes"]],()=>st,v=>st=v);
+mkChips("escChips",[["","Todas"],["Juracy","Juracy"],["Ulisses","Ulisses"],["none","Não informada"]],()=>esc,v=>{esc=v;fixa("escChips",v);});
+mkChips("stChips",[["","Todos"],["aus","Ausentes"],["pres","Presentes"]],()=>st,v=>{st=v;fixa("stChips",v);});
 
 function hi(name,terms){
   if(!terms.length) return esc_(name);
@@ -544,7 +548,9 @@ function hi(name,terms){
 
 /* ---------- modo coordenador: esconde os outros nomes e os filtros de seção/escola ---------- */
 const KEYC="mesarios-teonizia-coordenador";
-function marcaChip(box,idx){document.querySelectorAll("#"+box+" .chip").forEach((x,i)=>x.classList.toggle("on",i===idx));}
+function fixa(box,v){const el=document.getElementById(box);if(el)el.classList.toggle("fx",!!v);}
+function selFiltro(box,v){ if(box==="escChips")esc=v; else st=v; marcaChip(box,0); render(); }
+function marcaChip(box,idx){if(box==="escChips"||box==="stChips")fixa(box,idx>0);document.querySelectorAll("#"+box+" .chip").forEach((x,i)=>x.classList.toggle("on",i===idx));}
 function modoCoord(){
   const ctl=document.querySelector(".controls");
   if(coo){

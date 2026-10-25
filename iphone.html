@@ -63,6 +63,8 @@ body:has(#s810:checked) #rs .chip:not([for=s810]):not(.trocar){display:none}
 body:has(#s835:checked) .sec:not(.s835){display:none}
 body:has(#s835:checked) #rs .chip:not([for=s835]):not(.trocar){display:none}
 body:has(#s-all:not(:checked)) #rc{display:none}
+body:has(#st-a:checked) #rt .chip:not([for=st-a]):not(.trocar),body:has(#st-p:checked) #rt .chip:not([for=st-p]):not(.trocar){display:none}
+body:has(#st-t:not(:checked)) #rt .trocar{display:inline-block;order:99}
 body:has(#s-all:not(:checked)) #rs .trocar{display:inline-block;order:99}
 .ft{display:none}.ft::before{content:"Filtro: "}body:has(.ft-on) .x{}
 body:has(#c0:checked) .fc0{display:inline}
@@ -227,7 +229,7 @@ body:has(#mi:checked) .mapa{display:none}
   <div class="row"><label class="chip mi-on" for="mi">📸 Modo imagem (para print)</label><label class="chip" for="cl">👥 Coordenadores</label></div>
   <div class="row" id="rc"><span class="lbl">Coord.</span><label class="chip todos" for="c-all">Todos</label><label class="chip" for="c0">Mazoniel Reis</label><label class="chip" for="c1">Carla Bernhard</label><label class="chip" for="c2">Gustavo Bernhard</label><label class="chip" for="c3">Denilson Carvalho</label><label class="chip" for="c4">Alesson Miranda</label><label class="chip" for="c5">Debora Albuquerque</label><label class="chip" for="c6">Olívia Bezerra</label><label class="chip trocar" for="c-all">✕ Trocar coordenador</label></div>
   <div class="row" id="rs"><span class="lbl">Seção</span><label class="chip" for="s-all">Todas</label><label class="chip" for="s667">667</label><label class="chip" for="s750">750</label><label class="chip" for="s752">752</label><label class="chip" for="s766">766</label><label class="chip" for="s772">772</label><label class="chip" for="s781">781</label><label class="chip" for="s810">810</label><label class="chip" for="s835">835</label><label class="chip trocar" for="s-all">✕ Trocar seção</label></div>
-  <div class="row" id="rt"><span class="lbl">Situação</span><label class="chip" for="st-t">Todos</label><label class="chip" for="st-a">Ausentes</label><label class="chip" for="st-p">Presentes</label></div>
+  <div class="row" id="rt"><span class="lbl">Situação</span><label class="chip" for="st-t">Todos</label><label class="chip" for="st-a">Ausentes</label><label class="chip" for="st-p">Presentes</label><label class="chip trocar" for="st-t">✕ Trocar situação</label></div>
 </div>
 <main><section class="sec s667"><h2>Seção 667 <span class="tag Juracy">Juracy</span></h2><div class="coord">👤 Mazoniel Guedes Reis · <a href="tel:+5592981925319">(92) 98192-5319</a></div><div class="lista"><label class="m"><input type="checkbox" class="ck"><span class="bt"></span>
 <span class="fun">Presidente</span><b class="nome">FABIOLA VASCONCELOS AMORIM SANTOS</b>
