@@ -1,0 +1,845 @@
+<!doctype html>
+<html lang="pt-BR" class="nojs" style="-webkit-text-size-adjust:100%;text-size-adjust:100%">
+<head>
+<meta name="robots" content="noindex,nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mesários – Teonizia</title>
+<style>
+  :root{
+    --bg:#f4f6f8; --card:#fff; --ink:#1d2730; --muted:#5f6f7c; --line:#dde3e8;
+    --accent:#1f6f5c; --accent-soft:#e3f1ec; --jur:#8a4b0f; --jur-soft:#fbeedd;
+    --uli:#264f8c; --uli-soft:#e2ebf8; --warn:#9a3b00;
+    --ok:#1b7a3e; --ok-soft:#e1f4e7; --no:#b42318; --no-soft:#fde8e6;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#11171c; --card:#1a232a; --ink:#e6edf2; --muted:#9aabb8; --line:#2b3741;
+      --accent:#5cc3a5; --accent-soft:#183a31; --jur:#f0b071; --jur-soft:#3a2a17;
+      --uli:#8db5f0; --uli-soft:#1b2c45; --warn:#ffae73;
+      --ok:#6fd896; --ok-soft:#173726; --no:#ff8a80; --no-soft:#3d1c1a; }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink)}
+  header{padding:20px 16px 8px;max-width:1000px;margin:0 auto}
+  h1{margin:0;font-size:1.4rem}
+  .sub{color:var(--muted);font-size:.92rem;margin-top:4px}
+  .stats{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .stat{flex:1;min-width:120px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+  .stat b{display:block;font-size:1.5rem}
+  .stat span{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+  .stat.ok b{color:var(--ok)} .stat.no b{color:var(--no)}
+  .bar{height:6px;background:var(--no-soft);border-radius:4px;margin-top:10px;overflow:hidden}
+  .bar i{display:block;height:100%;background:var(--ok);width:0;transition:width .3s}
+  .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+  .controls{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 16px;max-width:1000px;margin:0 auto;border-bottom:1px solid var(--line)}
+  .search{width:100%;padding:11px 14px;font-size:1rem;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
+  .search:focus{outline:2px solid var(--accent);border-color:transparent}
+  .row{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;align-items:center}
+  .lbl{font-size:.8rem;color:var(--muted);margin-right:4px;text-transform:uppercase;letter-spacing:.04em;min-width:52px}
+  .chip{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:6px 12px;border-radius:999px;cursor:pointer;font-size:.9rem}
+  .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .trocar{order:99;display:none;border:1px dashed var(--muted);background:transparent;color:var(--muted);padding:6px 12px;border-radius:999px;cursor:pointer;font-size:.85rem}
+  .controls.focado #secChips,.controls.focado #escChips{display:none}
+  .controls.focado #cooChips .chip:not(.on){display:none}
+  .controls.focado #cooChips .trocar{display:inline-block}
+  .controls.focsec #cooChips,.controls.focsec #escChips{display:none}
+  .controls.focsec #secChips .chip:not(.on){display:none}
+  .controls.focsec #secChips .trocar{display:inline-block}
+  .count{margin-left:auto;font-size:.88rem;color:var(--muted)}
+  main{max-width:1000px;margin:0 auto;padding:12px 16px 40px}
+  .sec{margin-top:18px}
+  .sec h2{font-size:1.05rem;margin:0 0 8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .sec h2 .coord{flex-basis:100%;order:3;font-size:.82rem;font-weight:500;color:var(--muted)}
+  .sec h2 .prog{margin-left:auto;font-size:.82rem;font-weight:600;color:var(--muted)}
+  .sec h2 .prog.full{color:var(--ok)}
+  .tag{font-size:.75rem;font-weight:600;padding:2px 8px;border-radius:6px}
+  .tag.Juracy{background:var(--jur-soft);color:var(--jur)}
+  .tag.Ulisses{background:var(--uli-soft);color:var(--uli)}
+  .tag.none{background:var(--line);color:var(--muted)}
+  table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);font-size:.92rem;vertical-align:middle}
+  th{font-size:.75rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);background:var(--accent-soft)}
+  tr:last-child td{border-bottom:none}
+  tr.pres td{background:var(--ok-soft)}
+  td.nome{font-weight:600}
+  .fun{display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);margin-bottom:2px}
+  .mono{font-variant-numeric:tabular-nums;white-space:nowrap}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wa{font-size:.8rem;margin-left:6px}
+  .warn{color:var(--warn);font-size:.78rem;display:block;font-weight:400}
+  mark{background:#ffe58a;color:#000;border-radius:3px;padding:0 1px}
+  .empty{text-align:center;color:var(--muted);padding:40px 0}
+  .btn{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 14px;border-radius:8px;cursor:pointer;font-size:.9rem}
+  .btn.prim{background:var(--accent);border-color:var(--accent);color:#fff}
+  .btn.danger{color:var(--no)}
+  .pbtn{border:2px solid var(--no);background:var(--no-soft);color:var(--no);border-radius:8px;padding:7px 10px;font-size:.85rem;font-weight:600;cursor:pointer;white-space:nowrap;min-width:118px}
+  .pbtn.on{border-color:var(--ok);background:var(--ok);color:#fff}
+  /* modal */
+  .modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;padding:16px;z-index:20}
+  .modal.open{display:flex}
+  .box{background:var(--card);color:var(--ink);border-radius:12px;width:100%;max-width:720px;max-height:90vh;display:flex;flex-direction:column;padding:16px;gap:10px}
+  .box h3{margin:0;font-size:1.1rem}
+  .box textarea{flex:1;min-height:320px;width:100%;font-family:ui-monospace,Consolas,monospace;font-size:.85rem;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);resize:vertical}
+  .box .actions{margin-top:0}
+  .imgs{flex:1;overflow:auto;display:flex;flex-direction:column;gap:10px;background:var(--bg);padding:8px;border-radius:8px;min-height:200px}
+  .imgs img{width:100%;border:1px solid var(--line);border-radius:6px;display:block}
+  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;font-size:.9rem;opacity:0;transition:opacity .2s;pointer-events:none;z-index:30}
+  .toast.show{opacity:1}
+  @media (max-width:640px){
+    thead{display:none}
+    table,tbody,tr,td{display:block;width:100%}
+    tr{border-bottom:1px solid var(--line);padding:8px 0}
+    td{border:none;padding:3px 12px}
+    td::before{content:attr(data-l);display:inline-block;min-width:66px;color:var(--muted);font-size:.75rem;text-transform:uppercase}
+    td.nome::before,td.p::before{display:none}
+    td.p{padding-top:6px}
+  }
+  .pst{display:none}
+  @media print{
+    .controls,.actions,.btn,.wa,.pbtn,.modal,.cmodal,.mleg{display:none !important}
+    body{background:#fff;color:#000}
+    .pst{display:inline-block;font-weight:700;border:1.5px solid;border-radius:6px;padding:2px 8px;font-size:.85rem}
+    .pst.sim{color:#1b7a3e} .pst.nao{color:#b42318}
+    tr.pres td{background:#fff !important}
+    .sec{break-inside:avoid}
+    .stats .stat b{font-size:1.2rem}
+  }
+  /* sem JavaScript (ex.: pré-visualização do iPhone): mostra só a lista */
+  .nojs .controls,.nojs .actions,.nojs .stats,.nojs .bar,.nojs .pbtn,.nojs td.p,.nojs th:first-child,.nojs .prog{display:none !important}
+  .aviso{background:#fff4d6;color:#5c4400;border:1px solid #f0d78a;border-radius:10px;padding:10px 12px;font-size:.88rem;margin-top:12px}
+  .js .aviso{display:none}
+
+.mapa{margin:12px 0 4px;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.mapa summary{cursor:pointer;padding:10px 12px;font-weight:600;font-size:.92rem;list-style:none}
+.mapa summary::-webkit-details-marker{display:none}
+.mapa summary::after{content:"▾";float:right;color:var(--muted)}
+.mapa[open] summary::after{content:"▴"}
+.mwrap{position:relative;container-type:inline-size;margin:0 auto 8px;width:min(calc(100% - 8px),calc((100svh - 150px) * 1.1707))}
+.planta{display:block;width:100%;height:auto}
+.ms{position:absolute;box-sizing:border-box;border:max(2px,.45cqw) solid #141414;background:#fff;color:#141414;padding:0;margin:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;font-family:Arial,sans-serif;cursor:pointer;overflow:hidden;white-space:nowrap;
+  transition:background .2s,opacity .2s;-webkit-tap-highlight-color:transparent;line-height:1.05}
+.ms svg{width:100%;height:100%;display:block;fill:currentColor;font-family:Arial,Helvetica,sans-serif}
+.ms.on{background:#1f6f5c;color:#fff;border-color:#0d3b30;z-index:2;box-shadow:0 0 0 .7cqw rgba(31,111,92,.35)}
+.mwrap.foco .ms:not(.on){opacity:.35}
+.ms.ok .mc{fill:#1b7a3e} .ms.on.ok .mc{fill:#c9f5d7}
+.mleg{font-size:.78rem;color:var(--muted);padding:0 12px 10px}
+.ctab{overflow:auto}
+.ctab table{border-radius:8px}
+.ctab td.s{font-weight:700;white-space:nowrap;color:var(--accent);font-size:1rem}
+.ctab td small{display:block;color:var(--muted)}
+</style>
+</head>
+<body>
+<header>
+  <h1>Mesários – Centro de Convivência Teonizia</h1>
+  <div class="sub">Seções vindas das escolas Juracy e Ulisses · 8 seções · 32 mesários · <a href="iphone.html">versão para iPhone</a></div>
+  <div class="aviso">📱 Você está vendo a <b>versão só para leitura</b>. Para marcar presença e gerar imagens, abra este arquivo no navegador (Safari ou Chrome). No iPhone, use a <a href="iphone.html">versão para iPhone</a>.</div>
+  <div class="stats">
+    <div class="stat ok"><b id="nPres">0</b><span>Presentes</span></div>
+    <div class="stat no"><b id="nAus">32</b><span>Ausentes</span></div>
+  </div>
+  <div class="bar"><i id="barFill"></i></div>
+  <div class="actions">
+    <button class="btn prim" onclick="imagem()">🖼️ Gerar imagem da presença</button>
+    <button class="btn" onclick="abrirCoord()">👥 Coordenadores</button>
+    <button class="btn" onclick="window.print()">🖨️ Imprimir / salvar PDF</button>
+    <button class="btn danger" onclick="zerar()">Zerar presenças</button>
+  </div>
+</header>
+
+<div class="controls">
+  <input id="q" class="search" type="search" placeholder="Buscar por nome (ex.: maria, santos)…" autocomplete="off">
+  <div class="row" id="cooChips"><span class="lbl">Coord.</span><button class="trocar" onclick="selCoord('')">✕ Trocar coordenador</button></div>
+  <div class="row" id="secChips"><span class="lbl">Seção</span><button class="trocar" onclick="selSec('')">✕ Trocar seção</button></div>
+  <div class="row" id="escChips"><span class="lbl">Escola</span></div>
+  <div class="row" id="stChips"><span class="lbl">Situação</span><span class="count" id="count"></span></div>
+</div>
+
+<main id="out"><section class="sec"><h2>Seção 667 <span class="tag Juracy">Juracy</span>
+      <span class="coord">👤 Mazoniel Guedes Reis · <a href="tel:+5592981925319">(92) 98192-5319</a></span>
+      <span class="prog ">0/4 presentes</span></h2>
+    <table><thead><tr><th>Presença</th><th>Nome</th><th>Telefone</th></tr></thead><tbody><tr class="">
+        <td class="p" data-l=""><button class="pbtn " onclick="toggle('667-1')">Marcar chegada</button><span class="pst nao">Ausente</span></td>
+        <td class="nome" data-l=""><span class="fun">Presidente</span>FABIOLA VASCONCELOS AMORIM SANTOS</td>
+        <td class="mono" data-l="Tel.">
+          <a href="tel:+5592994298334">(92) 99429-8334</a>
+          <a class="wa" href="https://wa.me/5592994298334" target="_blank" rel="noopener">WhatsApp</a>
+        </td></tr><tr class="">
+        <td class="p" data-l=""><button class="pbtn " onclick="toggle('667-2')">Marcar chegada</button><span class="pst nao">Ausente</span></td>
+        <td class="nome" data-l=""><span class="fun">1º Mesário</span>JAQUELINE CORDEIRO CAMPOS</td>
+        <td class="mono" data-l="Tel.">
+          <a href="tel:+5592994406063">(92) 99440-6063</a>
+          <a class="wa" href="https://wa.me/5592994406063" target="_blank" rel="noopener">WhatsApp</a>
+        </td></tr><tr class="">
+        <td class="p" data-l=""><button class="pbtn " onclick="toggle('667-3')">Marcar chegada</button><span class="pst nao">Ausente</span></td>
+        <td class="nome" data-l=""><span class="fun">2º Mesário</span>MARILENE MARTINS DE SOUZA VIEGAS</td>
+        <td class="mono" data-l="Tel.">
+          <a href="tel:+5592981211776">(92) 98121-1776</a>
+          <a class="wa" href="https://wa.me/5592981211776" target="_blank" rel="noopener">WhatsApp</a>
+        </td></tr><tr class="">
+        <td class="p" data-l=""><button class="pbtn " onclick="toggle('667-4')">Marcar chegada</button><span class="pst nao">Ausente</span></td>
+        <td class="nome" data-l=""><span class="fun">Secretário</span>REINALDO DE JESUS MENDONCA DE ALENCAR</td>
+        <td class="mono" data-l="Tel.">
+          <a href="tel:+5592994752721">(92) 99475-2721</a>
+          <a class="wa" href="https://wa.me/5592994752721" target="_blank" rel="noopener">WhatsApp</a>
+        </td></tr></tbody></table></section><section class="sec"><h2>Seção 750 <span class="tag Ulisses">Ulisses</span>
+      <span class="coord">👤 Carla Conde Marques e Oliveira Bernhard · <a href="tel:+5592981520768">(92) 98152-0768</a></span>
+      <span class="prog ">0/4 presentes</span></h2>
+    <table><thead><tr><th>Presença</th><th>Nome</th><th>Telefone</th></tr></thead><tbody><tr class="">
+        <td class="p" data-l=""><button class="pbtn " onclick="toggle('750-1')">Marcar chegada</button><span class="pst nao">Ausente</span></td>
+        <td class="nome" data-l=""><span class="fun">Presidente</span>ZENAIDE RAMOS LIMA</td>
+        <td class="mono" data-l="Tel.">
+          <a href="tel:+5592993533306">(92) 99353-3306</a>
+          <a class="wa" href="https://wa.me/5592993533306" target="_blank" rel="noopener">WhatsApp</a>
+        </td></tr><tr class="">
+        <td class="p" data-l=""><button class="pbtn " onclick="toggle('750-2')">Marcar chegada</button><span class="pst nao">Ausente</span></td>
+        <td class="nome" data-l=""><span class="fun">1º Mesário</span>LORENA VICTORIA DE OLIVEIRA TAVARES</td>
+        <td class="mono" data-l="Tel.">
+          <a href="tel:+5592993969668">(92) 99396-9668</a>
+          <a class="wa" href="https://wa.me/5592993969668" target="_blank" rel="noopener">WhatsApp</a>
+        </td></tr><tr class="">
+        <td class="p" data-l=""><button class="pbtn " onclick="toggle('750-3')">Marcar chegada</button><span class="pst nao">Ausente</span></td>
+        <td class="nome" data-l=""><span class="fun">2º Mesário</span>PENELOPE ARYADNE ANTONY LIRA</td>
+        <td class="mono" data-l="Tel.">
+          <a href="tel:+5592991223569">(92) 99122-3569</a>
+          <a class="wa" href="https://wa.me/5592991223569" target="_blank" rel="noopener">WhatsApp</a>
+        </td></tr><tr class="">
+        <td class="p" data-l=""><button class="pbtn " onclick="toggle('750-4')">Marcar chegada</button><span class="pst nao">Ausente</span></td>
+        <td class="nome" data-l=""><span class="fun">Secretário</span>LUCAS SOARES MAIA</td>
+        <td class="mono" data-l="Tel.">
+          <a href="tel:+5592985453608">(92) 98545-3608</a>
+          <a class="wa" href="https://wa.me/5592985453608" target="_blank" rel="noopener">WhatsApp</a>
+        </td></tr></tbody></table></section><section class="sec"><h2>Seção 752 <span class="tag Juracy">Juracy</span>
+      <span class="coord">👤 Gustavo Galdino Rodrigues Bernhard · <a href="tel:+5592991610768">(92) 99161-0768</a></span>
+      <span class="prog ">0/4 presentes</span></h2>
+    <table><thead><tr><th>Presença</th><th>Nome</th><th>Telefone</th></tr></thead><tbody><tr class="">
+        <td class="p" data-l=""><button class="pbtn " onclick="toggle('752-1')">Marcar chegada</button><span class="pst nao">Ausente</span></td>
+        <td class="nome" data-l=""><span class="fun">Presidente</span>SAVANA FURTADO PEREIRA</td>
+        <td class="mono" data-l="Tel.">
+          <a href="tel:+5592994591724">(92) 99459-1724</a>
+          <a class="wa" href="https://wa.me/5592994591724" target="_blank" rel="noopener">WhatsApp</a>
+        </td></tr><tr class="">
+        <td class="p" data-l=""><button class="pbtn " onclick="toggle('752-2')">Marcar chegada</button><span class="pst nao">Ausente</span></td>
+        <td class="nome" data-l=""><span class="fun">1º Mesário</span>ANDREIA LIMA RODRIGUES</td>
+        <td class="mono" data-l="Tel.">
+          <a href="tel:+5592991541788">(92) 99154-1788</a>
+          <a class="wa" href="https://wa.me/5592991541788" target="_blank" rel="noopener">WhatsApp</a>
+        </td></tr><tr class="">
+        <td class="p" data-l=""><button class="pbtn " onclick="toggle('752-3')">Marcar chegada</button><span class="pst nao">Ausente</span></td>
+        <td class="nome" data-l=""><span class="fun">2º Mesário</span>JOICY FERNANDA DOS SANTOS SOUSA</td>
+        <td class="mono" data-l="Tel.">
+          <a href="tel:+5592984351005">(92) 98435-1005</a>
+          <a class="wa" href="https://wa.me/5592984351005" target="_blank" rel="noopener">WhatsApp</a>
+        </td></tr><tr class="">
+        <td class="p" data-l=""><button class="pbtn " onclick="toggle('752-4')">Marcar chegada</button><span class="pst nao">Ausente</span></td>
+        <td class="nome" data-l=""><span class="fun">Secretário</span>BRUNA OLIVEIRA DOS SANTOS</td>
+        <td class="mono" data-l="Tel.">
+          <a href="tel:+5592995261542">(92) 99526-1542</a>
+          <a class="wa" href="https://wa.me/5592995261542" target="_blank" rel="noopener">WhatsApp</a>
+        </td></tr></tbody></table></section><section class="sec"><h2>Seção 766 <span class="tag Juracy">Juracy</span>
+      <span class="coord">👤 Gustavo Galdino Rodrigues Bernhard · <a href="tel:+5592991610768">(92) 99161-0768</a></span>
+      <span class="prog ">0/4 presentes</span></h2>
+    <table><thead><tr><th>Presença</th><th>Nome</th><th>Telefone</th></tr></thead><tbody><tr class="">
+        <td class="p" data-l=""><button class="pbtn " onclick="toggle('766-1')">Marcar chegada</button><span class="pst nao">Ausente</span></td>
+        <td class="nome" data-l=""><span class="fun">Presidente</span>LUANA BARBOSA DO NASCIMENTO</td>
+        <td class="mono" data-l="Tel.">
+          <a href="tel:+5592991086991">(92) 99108-6991</a>
+          <a class="wa" href="https://wa.me/5592991086991" target="_blank" rel="noopener">WhatsApp</a>
+        </td></tr><tr class="">
+        <td class="p" data-l=""><button class="pbtn " onclick="toggle('766-2')">Marcar chegada</button><span class="pst nao">Ausente</span></td>
+        <td class="nome" data-l=""><span class="fun">1º Mesário</span>MOISÉS GONÇALVES RODRIGUES</td>
+        <td class="mono" data-l="Tel.">
+          <a href="tel:+5592984227985">(92) 98422-7985</a>
+          <a class="wa" href="https://wa.me/5592984227985" target="_blank" rel="noopener">WhatsApp</a>
+        </td></tr><tr class="">
+        <td class="p" data-l=""><button class="pbtn " onclick="toggle('766-3')">Marcar chegada</button><span class="pst nao">Ausente</span></td>
+        <td class="nome" data-l=""><span class="fun">2º Mesário</span>VITOR DA CRUZ SARMENTO</td>
+        <td class="mono" data-l="Tel.">
+          <a href="tel:+5592984392140">(92) 98439-2140</a>
+          <a class="wa" href="https://wa.me/5592984392140" target="_blank" rel="noopener">WhatsApp</a>
+        </td></tr><tr class="">
+        <td class="p" data-l=""><button class="pbtn " onclick="toggle('766-4')">Marcar chegada</button><span class="pst nao">Ausente</span></td>
+        <td class="nome" data-l=""><span class="fun">Secretário</span>ADRIA DOS SANTOS TAVEIRA</td>
+        <td class="mono" data-l="Tel.">
+          <a href="tel:+5592991124363">(92) 99112-4363</a>
+          <a class="wa" href="https://wa.me/5592991124363" target="_blank" rel="noopener">WhatsApp</a>
+        </td></tr></tbody></table></section><section class="sec"><h2>Seção 772 <span class="tag Ulisses">Ulisses</span>
+      <span class="coord">👤 Denilson de Albuquerque Carvalho · <a href="tel:+5592986236213">(92) 98623-6213</a></span>
+      <span class="prog ">0/4 presentes</span></h2>
+    <table><thead><tr><th>Presença</th><th>Nome</th><th>Telefone</th></tr></thead><tbody><tr class="">
+        <td class="p" data-l=""><button class="pbtn " onclick="toggle('772-1')">Marcar chegada</button><span class="pst nao">Ausente</span></td>
+        <td class="nome" data-l=""><span class="fun">Presidente</span>SAMUEL PASSOS PEREIRA</td>
+        <td class="mono" data-l="Tel.">
+          <a href="tel:+5592992747868">(92) 99274-7868</a>
+          <a class="wa" href="https://wa.me/5592992747868" target="_blank" rel="noopener">WhatsApp</a>
+        </td></tr><tr class="">
+        <td class="p" data-l=""><button class="pbtn " onclick="toggle('772-2')">Marcar chegada</button><span class="pst nao">Ausente</span></td>
+        <td class="nome" data-l=""><span class="fun">1º Mesário</span>HELENA ANDRADE DOS SANTOS</td>
+        <td class="mono" data-l="Tel.">
+          <a href="tel:+5592992298529">(92) 99229-8529</a>
+          <a class="wa" href="https://wa.me/5592992298529" target="_blank" rel="noopener">WhatsApp</a>
+        </td></tr><tr class="">
+        <td class="p" data-l=""><button class="pbtn " onclick="toggle('772-3')">Marcar chegada</button><span class="pst nao">Ausente</span></td>
+        <td class="nome" data-l=""><span class="fun">2º Mesário</span>TAIANA MOTA DOS REIS</td>
+        <td class="mono" data-l="Tel.">
+          <a href="tel:+5592992764410">(92) 99276-4410</a>
+          <a class="wa" href="https://wa.me/5592992764410" target="_blank" rel="noopener">WhatsApp</a>
+        </td></tr><tr class="">
+        <td class="p" data-l=""><button class="pbtn " onclick="toggle('772-4')">Marcar chegada</button><span class="pst nao">Ausente</span></td>
+        <td class="nome" data-l=""><span class="fun">Secretário</span>GABRIELLE RIBEIRO ARAUJO</td>
+        <td class="mono" data-l="Tel.">
+          <a href="tel:+5592992418563">(92) 99241-8563</a>
+          <a class="wa" href="https://wa.me/5592992418563" target="_blank" rel="noopener">WhatsApp</a>
+        </td></tr></tbody></table></section><section class="sec"><h2>Seção 781 <span class="tag Ulisses">Ulisses</span>
+      <span class="coord">👤 Alesson Miranda Pereira · <a href="tel:+5592992983968">(92) 99298-3968</a></span>
+      <span class="prog ">0/4 presentes</span></h2>
+    <table><thead><tr><th>Presença</th><th>Nome</th><th>Telefone</th></tr></thead><tbody><tr class="">
+        <td class="p" data-l=""><button class="pbtn " onclick="toggle('781-1')">Marcar chegada</button><span class="pst nao">Ausente</span></td>
+        <td class="nome" data-l=""><span class="fun">Presidente</span>PAULA JANINE BRANDAO CANDIDO</td>
+        <td class="mono" data-l="Tel.">
+          <a href="tel:+5592995055354">(92) 99505-5354</a>
+          <a class="wa" href="https://wa.me/5592995055354" target="_blank" rel="noopener">WhatsApp</a>
+        </td></tr><tr class="">
+        <td class="p" data-l=""><button class="pbtn " onclick="toggle('781-2')">Marcar chegada</button><span class="pst nao">Ausente</span></td>
+        <td class="nome" data-l=""><span class="fun">1º Mesário</span>ROBERTA ALBUQUERQUE DUTRA</td>
+        <td class="mono" data-l="Tel.">
+          <a href="tel:+5592995349670">(92) 99534-9670</a>
+          <a class="wa" href="https://wa.me/5592995349670" target="_blank" rel="noopener">WhatsApp</a>
+        </td></tr><tr class="">
+        <td class="p" data-l=""><button class="pbtn " onclick="toggle('781-3')">Marcar chegada</button><span class="pst nao">Ausente</span></td>
+        <td class="nome" data-l=""><span class="fun">2º Mesário</span>KAROLINE BRAZÃO DA SILVA</td>
+        <td class="mono" data-l="Tel.">
+          <a href="tel:+5592984567757">(92) 98456-7757</a>
+          <a class="wa" href="https://wa.me/5592984567757" target="_blank" rel="noopener">WhatsApp</a>
+        </td></tr><tr class="">
+        <td class="p" data-l=""><button class="pbtn " onclick="toggle('781-4')">Marcar chegada</button><span class="pst nao">Ausente</span></td>
+        <td class="nome" data-l=""><span class="fun">Secretário</span>MARA TATIANE SILVA DOS SANTOS MARIALVA</td>
+        <td class="mono" data-l="Tel.">
+          <a href="tel:+5592984366440">(92) 98436-6440</a>
+          <a class="wa" href="https://wa.me/5592984366440" target="_blank" rel="noopener">WhatsApp</a>
+        </td></tr></tbody></table></section><section class="sec"><h2>Seção 810 <span class="tag none">escola não informada</span>
+      <span class="coord">👤 Debora Silva de Albuquerque · <a href="tel:+5592991814545">(92) 99181-4545</a></span>
+      <span class="prog ">0/4 presentes</span></h2>
+    <table><thead><tr><th>Presença</th><th>Nome</th><th>Telefone</th></tr></thead><tbody><tr class="">
+        <td class="p" data-l=""><button class="pbtn " onclick="toggle('810-1')">Marcar chegada</button><span class="pst nao">Ausente</span></td>
+        <td class="nome" data-l=""><span class="fun">Presidente</span>JEFFERSON CONCEICAO DE OLIVEIRA</td>
+        <td class="mono" data-l="Tel.">
+          <a href="tel:+5592991543244">(92) 99154-3244</a>
+          <a class="wa" href="https://wa.me/5592991543244" target="_blank" rel="noopener">WhatsApp</a>
+        </td></tr><tr class="">
+        <td class="p" data-l=""><button class="pbtn " onclick="toggle('810-2')">Marcar chegada</button><span class="pst nao">Ausente</span></td>
+        <td class="nome" data-l=""><span class="fun">1º Mesário</span>JORLANDA ALVES DE AMORIM</td>
+        <td class="mono" data-l="Tel.">
+          <a href="tel:+5592988149003">(92) 98814-9003</a>
+          <a class="wa" href="https://wa.me/5592988149003" target="_blank" rel="noopener">WhatsApp</a>
+        </td></tr><tr class="">
+        <td class="p" data-l=""><button class="pbtn " onclick="toggle('810-3')">Marcar chegada</button><span class="pst nao">Ausente</span></td>
+        <td class="nome" data-l=""><span class="fun">2º Mesário</span>ISABELLY CHRISTINY DE OLIVEIRA CARVALHO</td>
+        <td class="mono" data-l="Tel.">
+          <a href="tel:+5592995132860">(92) 99513-2860</a>
+          <a class="wa" href="https://wa.me/5592995132860" target="_blank" rel="noopener">WhatsApp</a>
+        </td></tr><tr class="">
+        <td class="p" data-l=""><button class="pbtn " onclick="toggle('810-4')">Marcar chegada</button><span class="pst nao">Ausente</span></td>
+        <td class="nome" data-l=""><span class="fun">Secretário</span>IVAN LUIS ARRUDA FIGUEIRA</td>
+        <td class="mono" data-l="Tel.">
+          <a href="tel:+5592984623926">(92) 98462-3926</a>
+          <a class="wa" href="https://wa.me/5592984623926" target="_blank" rel="noopener">WhatsApp</a>
+        </td></tr></tbody></table></section><section class="sec"><h2>Seção 835 <span class="tag none">escola não informada</span>
+      <span class="coord">👤 Olívia de Moraes Bezerra · <a href="tel:+5592981882616">(92) 98188-2616</a></span>
+      <span class="prog ">0/4 presentes</span></h2>
+    <table><thead><tr><th>Presença</th><th>Nome</th><th>Telefone</th></tr></thead><tbody><tr class="">
+        <td class="p" data-l=""><button class="pbtn " onclick="toggle('835-1')">Marcar chegada</button><span class="pst nao">Ausente</span></td>
+        <td class="nome" data-l=""><span class="fun">Presidente</span>JEANE LIMA DE OLIVEIRA</td>
+        <td class="mono" data-l="Tel.">
+          <a href="tel:+5592993282511">(92) 99328-2511</a>
+          <a class="wa" href="https://wa.me/5592993282511" target="_blank" rel="noopener">WhatsApp</a>
+        </td></tr><tr class="">
+        <td class="p" data-l=""><button class="pbtn " onclick="toggle('835-2')">Marcar chegada</button><span class="pst nao">Ausente</span></td>
+        <td class="nome" data-l=""><span class="fun">1º Mesário</span>NAYARA DUARTE SICSU DE OLIVEIRA</td>
+        <td class="mono" data-l="Tel.">
+          <a href="tel:+5592992220244">(92) 99222-0244</a>
+          <a class="wa" href="https://wa.me/5592992220244" target="_blank" rel="noopener">WhatsApp</a>
+        </td></tr><tr class="">
+        <td class="p" data-l=""><button class="pbtn " onclick="toggle('835-3')">Marcar chegada</button><span class="pst nao">Ausente</span></td>
+        <td class="nome" data-l=""><span class="fun">2º Mesário</span>SUZANA TAVEIRA DE SOUZA</td>
+        <td class="mono" data-l="Tel.">
+          <a href="tel:+559292901070">(92) 9290-1070</a>
+          <a class="wa" href="https://wa.me/559292901070" target="_blank" rel="noopener">WhatsApp</a>
+        </td></tr><tr class="">
+        <td class="p" data-l=""><button class="pbtn " onclick="toggle('835-4')">Marcar chegada</button><span class="pst nao">Ausente</span></td>
+        <td class="nome" data-l=""><span class="fun">Secretário</span>ADRIEL OLIVEIRA DA SILVA</td>
+        <td class="mono" data-l="Tel.">
+          <a href="tel:+5592981161749">(92) 98116-1749</a>
+          <a class="wa" href="https://wa.me/5592981161749" target="_blank" rel="noopener">WhatsApp</a>
+        </td></tr></tbody></table></section></main>
+<div style="max-width:1000px;margin:0 auto;padding:0 16px 30px"><details class="mapa" open><summary>Mapa das seções</summary>
+<div class="mwrap" id="mapa"><svg viewBox="0 170 1920 1640" class="planta" aria-hidden="true">
+<rect x="72" y="285" width="1776" height="1468" fill="#f1f1ed" stroke="#141414" stroke-width="9"/>
+<rect x="954" y="276" width="192" height="18" fill="#f1f1ed"/>
+<path d="M955 292 V388 A95 95 0 0 0 1050 292 M1145 292 V388 A95 95 0 0 1 1050 292" fill="none" stroke="#141414" stroke-width="2.5"/>
+<path d="M1050 185 V258 M1030 238 L1050 262 L1070 238" fill="none" stroke="#c4441b" stroke-width="7" stroke-linecap="round"/>
+<text x="1092" y="238" fill="#c4441b" font-size="34" font-weight="700" letter-spacing="7" font-family="Arial,sans-serif">ENTRADA</text>
+<text x="1767" y="350" text-anchor="middle" font-size="26" font-weight="700" font-family="Arial,sans-serif">N</text>
+<path d="M1767 368 L1745 445 L1767 425 L1790 445 Z" fill="#fff" stroke="#141414" stroke-width="3"/><path d="M1767 368 L1767 425 L1790 445 Z" fill="#141414"/>
+<circle cx="468" cy="680" r="210" fill="#fff" stroke="#141414" stroke-width="18"/>
+<circle cx="1510" cy="690" r="210" fill="#fff" stroke="#141414" stroke-width="18"/>
+<rect x="133" y="929" width="402" height="320" fill="#fff" stroke="#141414" stroke-width="18"/>
+<rect x="584" y="1069" width="1100" height="641" fill="#fff" stroke="#141414" stroke-width="18"/>
+<line x1="985" y1="1069" x2="985" y2="1710" stroke="#141414" stroke-width="10"/>
+</svg><button class="ms ms667" style="left:27.083%;top:20.488%;width:7.708%;height:11.707%" type="button" onclick="selSec('667')"><svg viewBox="0 0 148 192" preserveAspectRatio="xMidYMid meet"><text x="74.0" y="61.3" font-size="31" font-weight="700" text-anchor="middle">SEÇÃO</text><text x="74.0" y="116.2" font-size="52" font-weight="700" text-anchor="middle">667</text><text class="mc" x="74.0" y="152.9" font-size="27" font-weight="700" text-anchor="middle"></text></svg></button><button class="ms ms750" style="left:19.792%;top:46.341%;width:7.708%;height:8.659%" type="button" onclick="selSec('750')"><svg viewBox="0 0 148 142" preserveAspectRatio="xMidYMid meet"><text x="74.0" y="36.3" font-size="31" font-weight="700" text-anchor="middle">SEÇÃO</text><text x="74.0" y="91.2" font-size="52" font-weight="700" text-anchor="middle">750</text><text class="mc" x="74.0" y="128.0" font-size="27" font-weight="700" text-anchor="middle"></text></svg></button><button class="ms ms835" style="left:75.729%;top:32.317%;width:7.812%;height:11.585%" type="button" onclick="selSec('835')"><svg viewBox="0 0 150 190" preserveAspectRatio="xMidYMid meet"><text x="75.0" y="60.3" font-size="31" font-weight="700" text-anchor="middle">SEÇÃO</text><text x="75.0" y="115.2" font-size="52" font-weight="700" text-anchor="middle">835</text><text class="mc" x="75.0" y="151.9" font-size="27" font-weight="700" text-anchor="middle"></text></svg></button><button class="ms ms752" style="left:15.000%;top:54.878%;width:7.500%;height:10.732%" type="button" onclick="selSec('752')"><svg viewBox="0 0 144 176" preserveAspectRatio="xMidYMid meet"><text x="72.0" y="53.3" font-size="31" font-weight="700" text-anchor="middle">SEÇÃO</text><text x="72.0" y="108.2" font-size="52" font-weight="700" text-anchor="middle">752</text><text class="mc" x="72.0" y="144.9" font-size="27" font-weight="700" text-anchor="middle"></text></svg></button><button class="ms ms766" style="left:6.927%;top:54.878%;width:7.500%;height:10.732%" type="button" onclick="selSec('766')"><svg viewBox="0 0 144 176" preserveAspectRatio="xMidYMid meet"><text x="72.0" y="53.3" font-size="31" font-weight="700" text-anchor="middle">SEÇÃO</text><text x="72.0" y="108.2" font-size="52" font-weight="700" text-anchor="middle">766</text><text class="mc" x="72.0" y="144.9" font-size="27" font-weight="700" text-anchor="middle"></text></svg></button><button class="ms ms810" style="left:60.417%;top:55.000%;width:8.229%;height:11.585%" type="button" onclick="selSec('810')"><svg viewBox="0 0 158 190" preserveAspectRatio="xMidYMid meet"><text x="79.0" y="60.3" font-size="31" font-weight="700" text-anchor="middle">SEÇÃO</text><text x="79.0" y="115.2" font-size="52" font-weight="700" text-anchor="middle">810</text><text class="mc" x="79.0" y="151.9" font-size="27" font-weight="700" text-anchor="middle"></text></svg></button><button class="ms ms781" style="left:51.458%;top:69.756%;width:7.917%;height:9.634%" type="button" onclick="selSec('781')"><svg viewBox="0 0 152 158" preserveAspectRatio="xMidYMid meet"><text x="76.0" y="44.3" font-size="31" font-weight="700" text-anchor="middle">SEÇÃO</text><text x="76.0" y="99.2" font-size="52" font-weight="700" text-anchor="middle">781</text><text class="mc" x="76.0" y="135.9" font-size="27" font-weight="700" text-anchor="middle"></text></svg></button><button class="ms ms772" style="left:63.646%;top:81.098%;width:8.958%;height:12.500%" type="button" onclick="selSec('772')"><svg viewBox="0 0 172 205" preserveAspectRatio="xMidYMid meet"><text x="86.0" y="67.8" font-size="31" font-weight="700" text-anchor="middle">SEÇÃO</text><text x="86.0" y="122.7" font-size="52" font-weight="700" text-anchor="middle">772</text><text class="mc" x="86.0" y="159.4" font-size="27" font-weight="700" text-anchor="middle"></text></svg></button></div>
+<div class="mleg">Toque numa seção do mapa para ver os mesários dela. A seção do filtro aplicado fica destacada.</div></details></div>
+
+
+<div class="modal" id="imgModal" onclick="if(event.target===this)fechar()">
+  <div class="box">
+    <h3 id="iTitle"></h3>
+    <div class="sub" id="iInfo"></div>
+    <div class="imgs" id="iPrev"></div>
+    <div class="actions">
+      <button class="btn prim" id="btnShare" onclick="compartilhar()">Compartilhar (WhatsApp)</button>
+      <button class="btn prim" onclick="baixar()">Baixar JPEG</button>
+      <button class="btn" onclick="fechar()">Fechar</button>
+    </div>
+  </div>
+</div>
+<div class="modal cmodal" id="coordModal" onclick="if(event.target===this)fecharCoord()">
+  <div class="box">
+    <h3>Coordenadores por seção</h3>
+    <div class="ctab" id="cTab"></div>
+    <div class="actions">
+      <button class="btn prim" onclick="imagemCoord()">🖼️ Gerar imagem</button>
+      <button class="btn" onclick="fecharCoord()">Fechar</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+document.documentElement.className="js";
+// [seção, escola, título, nome, cpf, telefone, observação]
+const D = [
+ ["667","Juracy","667-1","FABIOLA VASCONCELOS AMORIM SANTOS","","92994298334"],
+ ["667","Juracy","667-2","JAQUELINE CORDEIRO CAMPOS","","92994406063"],
+ ["667","Juracy","667-3","MARILENE MARTINS DE SOUZA VIEGAS","","92981211776"],
+ ["667","Juracy","667-4","REINALDO DE JESUS MENDONCA DE ALENCAR","","92994752721"],
+ ["750","Ulisses","750-1","ZENAIDE RAMOS LIMA","","92993533306"],
+ ["750","Ulisses","750-2","LORENA VICTORIA DE OLIVEIRA TAVARES","","92993969668"],
+ ["750","Ulisses","750-3","PENELOPE ARYADNE ANTONY LIRA","","92991223569"],
+ ["750","Ulisses","750-4","LUCAS SOARES MAIA","","92985453608"],
+ ["752","Juracy","752-1","SAVANA FURTADO PEREIRA","","92994591724"],
+ ["752","Juracy","752-2","ANDREIA LIMA RODRIGUES","","92991541788"],
+ ["752","Juracy","752-3","JOICY FERNANDA DOS SANTOS SOUSA","","92984351005"],
+ ["752","Juracy","752-4","BRUNA OLIVEIRA DOS SANTOS","","92995261542"],
+ ["766","Juracy","766-1","LUANA BARBOSA DO NASCIMENTO","","92991086991"],
+ ["766","Juracy","766-2","MOISÉS GONÇALVES RODRIGUES","","92984227985"],
+ ["766","Juracy","766-3","VITOR DA CRUZ SARMENTO","","92984392140"],
+ ["766","Juracy","766-4","ADRIA DOS SANTOS TAVEIRA","","92991124363"],
+ ["772","Ulisses","772-1","SAMUEL PASSOS PEREIRA","","92992747868"],
+ ["772","Ulisses","772-2","HELENA ANDRADE DOS SANTOS","","92992298529"],
+ ["772","Ulisses","772-3","TAIANA MOTA DOS REIS","","92992764410"],
+ ["772","Ulisses","772-4","GABRIELLE RIBEIRO ARAUJO","","92992418563"],
+ ["781","Ulisses","781-1","PAULA JANINE BRANDAO CANDIDO","","92995055354"],
+ ["781","Ulisses","781-2","ROBERTA ALBUQUERQUE DUTRA","","92995349670"],
+ ["781","Ulisses","781-3","KAROLINE BRAZÃO DA SILVA","","92984567757"],
+ ["781","Ulisses","781-4","MARA TATIANE SILVA DOS SANTOS MARIALVA","","92984366440"],
+ ["810","","810-1","JEFFERSON CONCEICAO DE OLIVEIRA","","92991543244"],
+ ["810","","810-2","JORLANDA ALVES DE AMORIM","","92988149003"],
+ ["810","","810-3","ISABELLY CHRISTINY DE OLIVEIRA CARVALHO","","92995132860"],
+ ["810","","810-4","IVAN LUIS ARRUDA FIGUEIRA","","92984623926"],
+ ["835","","835-1","JEANE LIMA DE OLIVEIRA","","92993282511"],
+ ["835","","835-2","NAYARA DUARTE SICSU DE OLIVEIRA","","92992220244"],
+ ["835","","835-3","SUZANA TAVEIRA DE SOUZA","","9292901070"],
+ ["835","","835-4","ADRIEL OLIVEIRA DA SILVA","","92981161749"]
+].map(r=>({sec:r[0],esc:r[1],tit:r[2].replace(" ",""),nome:r[3],cpf:r[4],tel:r[5],obs:r[6]||""}));
+
+/* mensagem automática do link de WhatsApp de cada mesário */
+const MSG_WA="Olá Sr.(a) mesário(a), você está recebendo esta mensagem porquê foi convocado para trabalhar nas eleições 2026, acesse abaixo o grupo referente ao seu local de atuação CENTRO DE CONVIVÊNCIA TEONÍZIA LOBO, esse grupo será desfeito após o fim do pleito.\n\nhttps://chat.whatsapp.com/K1q8DsbJT4P0aSY4b86p1g";
+const LOCAL_WA="https://share.google/GFH3MTTBILisBBjOX";
+const msgWA=d=>`${MSG_WA}\n\n📌 *Cargo na mesa receptora:* ${d.fun}\n🗳️ *Seção:* ${d.sec}\n📍 *Localização do local de trabalho:* ${LOCAL_WA}`;
+
+const SECS=[...new Set(D.map(d=>d.sec))];
+/* função na mesa: segue a ordem da lista dentro de cada seção */
+const FUNCOES=["Presidente","1º Mesário","2º Mesário","Secretário"];
+SECS.forEach(s=>D.filter(d=>d.sec===s).forEach((d,i)=>d.fun=FUNCOES[i]||""));
+
+/* ---------- coordenadores: [nome, CPF, telefone, seção] ----------
+   Para trocar a distribuição, basta mudar a seção na última coluna (mais de uma: "752,766"). */
+const C=[
+ ["MAZONIEL GUEDES REIS","","92981925319","667"],
+ ["CARLA CONDE MARQUES E OLIVEIRA BERNHARD","","92981520768","750"],
+ ["GUSTAVO GALDINO RODRIGUES BERNHARD","","92991610768","752,766"],
+ ["DENILSON DE ALBUQUERQUE CARVALHO","","92986236213","772"],
+ ["ALESSON MIRANDA PEREIRA","","92992983968","781","Alesson Miranda"],
+ ["DEBORA SILVA DE ALBUQUERQUE","","92991814545","810"],
+ ["OLÍVIA DE MORAES BEZERRA","","92981882616","835"]
+].map(r=>({nome:r[0],cpf:r[1],tel:r[2],secs:r[3].split(","),apelido:r[4]||""}));
+const tc=s=>s.toLowerCase().replace(/(^|\s)(\S)/g,(m,a,b)=>a+b.toUpperCase()).replace(/\b(De|Da|Do|Dos|Das|E)\b/g,w=>w.toLowerCase());
+const curto=n=>{const c=C.find(x=>x.nome===n);if(c&&c.apelido)return c.apelido;const p=n.split(" ");return tc(p[0]+" "+p[p.length-1]);};
+const coordsDe=s=>C.filter(c=>c.secs.includes(s));
+const secsTxt=c=>c.secs.join(" e ");
+const coordTxt=s=>coordsDe(s).map(c=>curto(c.nome)).join(" e ");
+
+let sec="", esc="", st="", coo="";
+
+/* ---------- presença (salva neste navegador) ---------- */
+const KEY="mesarios-teonizia-presenca";
+let P={};
+try{ P=JSON.parse(localStorage.getItem(KEY)||"{}")||{}; }catch(e){ P={}; }
+function salvar(){ try{ localStorage.setItem(KEY,JSON.stringify(P)); }catch(e){} }
+const hora=ts=>new Date(ts).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+const agoraTxt=()=>new Date().toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"});
+
+function toggle(tit){
+  const d=D.find(x=>x.tit===tit);
+  if(P[tit]){
+    if(!confirm(`Desmarcar a chegada de ${d.nome}?`)) return;
+    delete P[tit];
+  }else{
+    P[tit]=Date.now();
+    toast(`${d.nome} marcado(a) como presente às ${hora(P[tit])}`);
+  }
+  salvar(); render();
+}
+function zerar(){
+  if(!Object.keys(P).length){ toast("Nenhuma presença marcada."); return; }
+  if(!confirm("Apagar TODAS as presenças marcadas? Isso não pode ser desfeito.")) return;
+  P={}; salvar(); render();
+}
+
+/* ---------- utilidades ---------- */
+const norm=s=>s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+const esc_=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmtTit=t=>t.replace(/^(\d{4})(\d{4})(\d{4})$/,"$1 $2 $3");
+const fmtTel=t=>t.length===11?`(${t.slice(0,2)}) ${t.slice(2,7)}-${t.slice(7)}`:t.length===10?`(${t.slice(0,2)}) ${t.slice(2,6)}-${t.slice(6)}`:t;
+function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("show"),2200);}
+
+function mkChips(box,items,get,set){
+  const el=document.getElementById(box), ref=el.querySelector(".count");
+  items.forEach(([v,l])=>{
+    const b=document.createElement("button");
+    b.className="chip"+(v===get()?" on":""); b.textContent=l;
+    b.onclick=()=>{set(v);el.querySelectorAll(".chip").forEach(x=>x.classList.remove("on"));b.classList.add("on");render();};
+    ref?el.insertBefore(b,ref):el.appendChild(b);
+  });
+}
+mkChips("cooChips",[["","Todos"],...C.map((c,i)=>[String(i),curto(c.nome)])],()=>coo,v=>{coo=v;modoCoord();});
+mkChips("secChips",[["","Todas"],...SECS.map(s=>[s,s])],()=>sec,v=>{sec=v;modoSec();});
+mkChips("escChips",[["","Todas"],["Juracy","Juracy"],["Ulisses","Ulisses"],["none","Não informada"]],()=>esc,v=>esc=v);
+mkChips("stChips",[["","Todos"],["aus","Ausentes"],["pres","Presentes"]],()=>st,v=>st=v);
+
+function hi(name,terms){
+  if(!terms.length) return esc_(name);
+  const n=norm(name); const m=new Array(name.length).fill(false);
+  terms.forEach(t=>{let i=n.indexOf(t);while(i>-1){for(let k=i;k<i+t.length;k++)m[k]=true;i=n.indexOf(t,i+1);}});
+  let out="",open=false;
+  for(let i=0;i<name.length;i++){
+    if(m[i]&&!open){out+="<mark>";open=true}
+    if(!m[i]&&open){out+="</mark>";open=false}
+    out+=esc_(name[i]);
+  }
+  return out+(open?"</mark>":"");
+}
+
+/* ---------- modo coordenador: esconde os outros nomes e os filtros de seção/escola ---------- */
+const KEYC="mesarios-teonizia-coordenador";
+function marcaChip(box,idx){document.querySelectorAll("#"+box+" .chip").forEach((x,i)=>x.classList.toggle("on",i===idx));}
+function modoCoord(){
+  const ctl=document.querySelector(".controls");
+  if(coo){
+    sec="";esc="";marcaChip("secChips",0);marcaChip("escChips",0);
+    ctl.classList.remove("focsec");ctl.classList.add("focado");
+  }else ctl.classList.remove("focado");
+  try{coo?localStorage.setItem(KEYC,C[+coo].nome):localStorage.removeItem(KEYC);}catch(e){}
+}
+function modoSec(){
+  const ctl=document.querySelector(".controls");
+  if(sec){ coo="";esc="";marcaChip("cooChips",0);marcaChip("escChips",0);ctl.classList.remove("focado");ctl.classList.add("focsec");
+    try{localStorage.removeItem(KEYC);}catch(e){} }
+  else ctl.classList.remove("focsec");
+}
+function selSec(v){sec=v;marcaChip("secChips",v===""?0:SECS.indexOf(v)+1);modoSec();render();window.scrollTo({top:0});}
+function selCoord(v){coo=v;marcaChip("cooChips",v===""?0:+v+1);modoCoord();render();window.scrollTo({top:0});}
+try{const sv=localStorage.getItem(KEYC);const i=C.findIndex(c=>c.nome===sv);if(i>=0){coo=String(i);marcaChip("cooChips",i+1);modoCoord();}}catch(e){}
+
+/* ---------- mapa: destaca as seções do filtro e mostra presentes/total ---------- */
+function atualizaMapa(list,filtrado){
+  const ativos=new Set(list.map(d=>d.sec));
+  const w=document.getElementById("mapa"); if(!w) return;
+  w.classList.toggle("foco",filtrado&&ativos.size>0);
+  SECS.forEach(s=>{
+    const el=w.querySelector(".ms"+s); if(!el) return;
+    const all=D.filter(d=>d.sec===s), pr=all.filter(d=>P[d.tit]).length;
+    el.classList.toggle("on",filtrado&&ativos.has(s));
+    el.classList.toggle("ok",pr===all.length);
+    el.querySelector(".mc").textContent=`${pr}/${all.length}`;
+  });
+}
+
+/* ---------- lista ---------- */
+function render(){
+  // placar = reflexo dos filtros (coordenador, seção, escola e busca); "Situação" não entra, senão um dos lados zeraria
+  const tq=norm(document.getElementById("q").value).split(/\s+/).filter(Boolean);
+  const U=D.filter(d=>(!coo||C[+coo].secs.includes(d.sec))&&(!sec||d.sec===sec)&&(!esc||(esc==="none"?!d.esc:d.esc===esc))&&tq.every(t=>norm(d.nome).includes(t)));
+  const nP=U.filter(d=>P[d.tit]).length;
+  document.getElementById("nPres").textContent=nP;
+  document.getElementById("nAus").textContent=U.length-nP;
+  document.getElementById("barFill").style.width=(U.length?nP/U.length*100:0)+"%";
+
+  const terms=norm(document.getElementById("q").value).split(/\s+/).filter(Boolean);
+  const list=D.filter(d=>
+    (!coo||C[+coo].secs.includes(d.sec)) &&
+    (!sec||d.sec===sec) &&
+    (!esc||(esc==="none"?!d.esc:d.esc===esc)) &&
+    (!st||(st==="pres"?!!P[d.tit]:!P[d.tit])) &&
+    terms.every(t=>norm(d.nome).includes(t))
+  );
+  atualizaMapa(list,!!(coo||sec||esc||st||terms.length));
+  document.getElementById("count").textContent=`${list.length} de ${D.length} mesários`;
+  const out=document.getElementById("out");
+  if(!list.length){out.innerHTML='<div class="empty">Nenhum mesário encontrado.</div>';return;}
+  let html="";
+  SECS.forEach(s=>{
+    const rows=list.filter(d=>d.sec===s); if(!rows.length) return;
+    const all=D.filter(d=>d.sec===s), pr=all.filter(d=>P[d.tit]).length;
+    const e=all[0].esc;
+    html+=`<section class="sec"><h2>Seção ${s} <span class="tag ${e||"none"}">${e||"escola não informada"}</span>
+      <span class="coord">👤 ${coordsDe(s).map(c=>`${esc_(tc(c.nome))} · <a href="tel:+55${c.tel}">${fmtTel(c.tel)}</a>`).join(" &nbsp;|&nbsp; ")}</span>
+      <span class="prog ${pr===all.length?"full":""}">${pr}/${all.length} presentes</span></h2>
+    <table><thead><tr><th>Presença</th><th>Nome</th><th>Telefone</th></tr></thead><tbody>`;
+    rows.forEach(d=>{
+      const p=P[d.tit];
+      html+=`<tr class="${p?"pres":""}">
+        <td class="p" data-l=""><button class="pbtn ${p?"on":""}" onclick="toggle('${d.tit}')">${p?"✓ Chegou "+hora(p):"Marcar chegada"}</button><span class="pst ${p?"sim":"nao"}">${p?"Presente · "+hora(p):"Ausente"}</span></td>
+        <td class="nome" data-l=""><span class="fun">${d.fun}</span>${hi(d.nome,terms)}${d.obs?`<span class="warn">⚠ ${esc_(d.obs)}</span>`:""}</td>
+        <td class="mono" data-l="Tel.">
+          <a href="tel:+55${d.tel}">${fmtTel(d.tel)}</a>
+          <a class="wa" href="https://wa.me/55${d.tel}" target="_blank" rel="noopener">WhatsApp</a>
+        </td></tr>`;
+    });
+    html+="</tbody></table></section>";
+  });
+  out.innerHTML=html;
+}
+
+/* ---------- relatório único (presentes e ausentes sinalizados) ---------- */
+function dados(){
+  // aplica os filtros da tela (coordenador, seção, escola e busca por nome)
+  const terms=norm(document.getElementById("q").value).split(/\s+/).filter(Boolean);
+  const base=D.filter(d=>
+    (!coo||C[+coo].secs.includes(d.sec)) &&
+    (!sec||d.sec===sec) &&
+    (!esc||(esc==="none"?!d.esc:d.esc===esc)) &&
+    (!st||(st==="pres"?!!P[d.tit]:!P[d.tit])) &&
+    terms.every(t=>norm(d.nome).includes(t))
+  );
+  const partes=[];
+  if(st) partes.push(st==="pres"?"Somente presentes":"Somente ausentes");
+  if(coo) partes.push("Coord. "+curto(C[+coo].nome)+" (Seção "+secsTxt(C[+coo])+")");
+  if(sec) partes.push("Seção "+sec);
+  if(esc) partes.push(esc==="none"?"Escola não informada":"Escola "+esc);
+  if(terms.length) partes.push('Nome: "'+document.getElementById("q").value.trim()+'"');
+  const groups=[];
+  SECS.forEach(s=>{
+    const rows=base.filter(d=>d.sec===s); if(!rows.length) return;
+    groups.push({s,e:rows[0].esc,rows,pres:rows.filter(d=>P[d.tit]).length});
+  });
+  const nPres=base.filter(d=>P[d.tit]).length;
+  return {groups,total:base.length,nPres,nAus:base.length-nPres,filtro:partes.join(" · "),quando:agoraTxt()};
+}
+function fechar(){document.getElementById("imgModal").classList.remove("open");}
+
+/* ---------- painel de coordenadores ---------- */
+function linhasCoord(){ return SECS.map(s=>({s,e:D.find(d=>d.sec===s).esc,cs:coordsDe(s)})); }
+function abrirCoord(){
+  document.getElementById("cTab").innerHTML='<table><thead><tr><th>Seção</th><th>Coordenação</th></tr></thead><tbody>'+
+    linhasCoord().map(r=>`<tr><td class="s">${r.s}<small>${r.e||"&nbsp;"}</small></td><td>${r.cs.length?r.cs.map(c=>`<b>${esc_(tc(c.nome))}</b><small><a href="tel:+55${c.tel}">${fmtTel(c.tel)}</a>${c.secs.length>1?" · também seção "+c.secs.filter(x=>x!==r.s).join(", "):""}</small>`).join(""):'<i>sem coordenador</i>'}</td></tr>`).join("")+'</tbody></table>';
+  document.getElementById("coordModal").classList.add("open");
+}
+function fecharCoord(){document.getElementById("coordModal").classList.remove("open");}
+async function imagemCoord(){
+  try{
+    const W=1080,PAD=56,F="system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif",HEADC="#1f4f5c";
+    const L=linhasCoord(); const rows=L.map(r=>({...r,h:Math.max(1,r.cs.length)*86+34}));
+    const HB=200,H=HB+30+rows.reduce((a,r)=>a+r.h,0)+80;
+    const cv=document.createElement("canvas"); cv.width=W; cv.height=H; const c=cv.getContext("2d");
+    c.fillStyle="#fff"; c.fillRect(0,0,W,H);
+    c.fillStyle=HEADC; c.fillRect(0,0,W,HB); c.fillStyle="#fff";
+    c.font="bold 54px "+F; c.fillText("COORDENADORES",PAD,86);
+    c.font="32px "+F; c.fillText("Centro de Convivência Teonizia · por seção",PAD,136);
+    c.font="28px "+F; c.fillText(agoraTxt(),PAD,176);
+    let y=HB+30;
+    rows.forEach((r,i)=>{
+      c.fillStyle=i%2?"#f4f7f8":"#fff"; c.fillRect(0,y,W,r.h);
+      c.fillStyle=HEADC; c.font="bold 46px "+F; c.fillText(r.s,PAD,y+62);
+      c.fillStyle="#5f6f7c"; c.font="24px "+F; c.fillText(r.e||"",PAD,y+96);
+      let yy=y+20;
+      (r.cs.length?r.cs:[null]).forEach(cc=>{
+        if(!cc){c.fillStyle="#b42318";c.font="italic 32px "+F;c.fillText("sem coordenador",PAD+190,yy+40);return;}
+        c.fillStyle="#1d2730"; c.font="bold 32px "+F; c.fillText(tc(cc.nome),PAD+190,yy+38);
+        c.fillStyle="#44515c"; c.font="28px "+F; c.fillText(fmtTel(cc.tel)+(cc.secs.length>1?"  ·  também seção "+cc.secs.filter(x=>x!==r.s).join(", "):""),PAD+190,yy+74);
+        yy+=86;
+      });
+      c.fillStyle="#e3e8ec"; c.fillRect(PAD,y+r.h-2,W-2*PAD,2);
+      y+=r.h;
+    });
+    c.fillStyle="#8a97a2"; c.font="24px "+F; c.fillText("Lista de coordenadores · Teonizia",PAD,H-30);
+    const now=new Date(); const stamp=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}-${String(now.getDate()).padStart(2,"0")}`;
+    arquivos=[canvasParaArquivo(cv,`coordenadores-teonizia_${stamp}.jpg`)];
+    fecharCoord(); mostrarImagens("Imagem – coordenadores","1 imagem.");
+  }catch(e){ console.error(e); alertaBox("Não foi possível gerar a imagem neste navegador ("+(e&&e.message||e)+")."); }
+}
+function mostrarImagens(titulo,info){
+  const prev=document.getElementById("iPrev"); prev.innerHTML="";
+  arquivos.forEach(f=>{const im=new Image();im.src=f.dataURL;im.alt=f.name;prev.appendChild(im);});
+  document.getElementById("iTitle").textContent=titulo;
+  document.getElementById("iInfo").textContent=info+" Se o botão Baixar não funcionar, toque e segure a imagem e escolha “Salvar imagem”.";
+  let pode=false; try{pode=!!(navigator.canShare&&navigator.canShare({files:arquivos}));}catch(e){}
+  document.getElementById("btnShare").style.display=pode?"":"none";
+  document.getElementById("imgModal").classList.add("open");
+}
+
+/* ---------- imagem JPEG (1080 px de largura, páginas no formato de tela de celular) ---------- */
+let arquivos=[];
+function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath();}
+async function imagem(){
+  try{ await gerarImagem(); }
+  catch(e){
+    console.error(e);
+    alertaBox("Não foi possível gerar a imagem neste navegador ("+(e&&e.message||e)+"). Abra o arquivo direto no Chrome ou Edge (clique duas vezes no arquivo .html baixado).");
+  }
+}
+function alertaBox(msg){
+  document.getElementById("iTitle").textContent="Atenção";
+  document.getElementById("iInfo").textContent=msg;
+  document.getElementById("iPrev").innerHTML="";
+  document.getElementById("imgModal").classList.add("open");
+}
+function canvasParaArquivo(cv,nome){
+  const url=cv.toDataURL("image/jpeg",0.92);
+  const bin=atob(url.split(",")[1]); const u8=new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);
+  let f; try{ f=new File([u8],nome,{type:"image/jpeg"}); }catch(e){ f=new Blob([u8],{type:"image/jpeg"}); f.name=nome; }
+  f.dataURL=url; return f;
+}
+async function gerarImagem(){
+  const R=dados();
+  const W=1080,PAD=56,MAXH=1920,FOOT=72;
+  const HB=R.filtro?300:252, HEAD=HB+36;
+  const F="system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif";
+  const HEADC="#1f4f5c", OK="#1b7a3e", OKS="#eef8f1", NO="#b42318", NOS="#fdf1f0";
+  const fName="bold 36px "+F, fData="30px "+F;
+  const m=document.createElement("canvas").getContext("2d");
+  const wrap=(txt,font,maxW)=>{m.font=font;const out=[];let cur="";txt.split(" ").forEach(w=>{const t=cur?cur+" "+w:w;if(m.measureText(t).width>maxW&&cur){out.push(cur);cur=w;}else cur=t;});if(cur)out.push(cur);return out;};
+
+  const blocks=[];
+  R.groups.forEach(g=>{
+    blocks.push({type:"sec",g,h:140});
+    g.rows.forEach((d,i)=>{const nl=wrap(d.nome,fName,W-2*PAD-40);blocks.push({type:"p",g,d,nl,h:24+36+nl.length*46+42+26});});
+  });
+  if(!R.total) blocks.push({type:"empty",h:160});
+
+  // agrupa por seção: uma seção nunca é dividida entre duas imagens
+  const grupos=[]; blocks.forEach(b=>{ if(b.type!=="p"||!grupos.length) grupos.push([b]); else grupos[grupos.length-1].push(b); });
+  const umaPorSecao=!R.filtro;            // filtro "Todos/Todas": cada seção em uma imagem
+  const pages=[]; let y=HEAD;
+  grupos.forEach(g=>{
+    const h=g.reduce((a,b)=>a+b.h,0);
+    if(!pages.length||umaPorSecao||y+h>MAXH-FOOT){ pages.push([]); y=HEAD; }
+    pages[pages.length-1].push(...g); y+=h;
+  });
+
+  const N=pages.length, now=new Date();
+  const stamp=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}-${String(now.getDate()).padStart(2,"0")}_${String(now.getHours()).padStart(2,"0")}${String(now.getMinutes()).padStart(2,"0")}`;
+  arquivos=[];
+  for(let pi=0;pi<N;pi++){
+    const blks=pages[pi];
+    const H=HEAD+blks.reduce((a,b)=>a+b.h,0)+FOOT;
+    const cv=document.createElement("canvas"); cv.width=W; cv.height=H;
+    const c=cv.getContext("2d");
+    c.fillStyle="#fff"; c.fillRect(0,0,W,H);
+    // cabeçalho
+    c.fillStyle=HEADC; c.fillRect(0,0,W,HB);
+    c.fillStyle="#fff";
+    c.font="bold 54px "+F; c.fillText("PRESENÇA DOS MESÁRIOS",PAD,84);
+    c.font="32px "+F; c.fillText("Centro de Convivência Teonizia",PAD,130);
+    c.font="28px "+F; c.fillText(R.quando,PAD,172);
+    // placares
+    const pill=(x,txt,bg)=>{c.font="bold 32px "+F;const w=c.measureText(txt).width+40;c.fillStyle=bg;rr(c,x,190,w,48,24);c.fill();c.fillStyle="#fff";c.fillText(txt,x+20,226);return x+w+14;};
+    let px=PAD;
+    if(st!=="aus") px=pill(px,`✓ ${R.nPres} presente(s)`,OK);
+    if(st!=="pres") px=pill(px,`✗ ${R.nAus} ausente(s)`,NO);
+    if(!st){c.font="28px "+F; c.fillStyle="#d7e6ea"; c.fillText(`de ${R.total}`,px,224);}
+    if(R.filtro){c.fillStyle="#fff";c.font="bold 28px "+F;c.fillText(("Filtro: "+R.filtro).slice(0,60),PAD,282);}
+    if(N>1){c.fillStyle="#fff";c.textAlign="right";c.font="bold 30px "+F;c.fillText(`${pi+1}/${N}`,W-PAD,84);c.textAlign="left";}
+    let yb=HEAD;
+    blks.forEach(b=>{
+      if(b.type==="sec"){
+        const full=!st&&b.g.pres===b.g.rows.length;
+        c.fillStyle="#e8eef0"; rr(c,PAD-16,yb+14,W-2*PAD+32,76,14); c.fill();
+        c.fillStyle=HEADC; c.font="bold 38px "+F;
+        c.fillText(`SEÇÃO ${b.g.s}${b.g.e?" · "+b.g.e:""}${b.cont?" (cont.)":""}`,PAD,yb+66);
+        c.textAlign="right"; c.font="bold 28px "+F; c.fillStyle=full?OK:"#44515c";
+        c.fillText(st==="aus"?`${b.g.rows.length} ausente(s)`:st==="pres"?`${b.g.rows.length} presente(s)`:`${b.g.pres}/${b.g.rows.length} presentes${full?" ✓":""}`,W-PAD,yb+64);
+        c.textAlign="left";
+        c.fillStyle="#44515c"; c.font="28px "+F;
+        c.fillText(`Coordenação: ${coordTxt(b.g.s)}`,PAD,yb+124);
+      }else if(b.type==="p"){
+        const p=P[b.d.tit], col=p?OK:NO;
+        c.fillStyle=p?OKS:NOS; c.fillRect(PAD-16,yb+8,W-2*PAD+32,b.h-16);
+        c.fillStyle=col; c.fillRect(PAD-16,yb+8,10,b.h-16);
+        let yy=yb+24; const X=PAD+16;
+        c.fillStyle="#1f4f5c"; c.font="bold 26px "+F; c.fillText(b.d.fun.toUpperCase(),X,yy+28); yy+=36;
+        c.fillStyle="#1d2730"; c.font=fName;
+        b.nl.forEach(l=>{c.fillText(l,X,yy+38); yy+=46;});
+        c.font=fData; c.fillStyle="#44515c";
+        c.fillText(`Tel.: ${fmtTel(b.d.tel)}`,X,yy+34);
+        // selo de situação
+        const txt=p?`✓ PRESENTE ${hora(p)}`:"✗ AUSENTE";
+        c.font="bold 28px "+F; const w=c.measureText(txt).width+32;
+        c.fillStyle=col; rr(c,W-PAD-w,yy+2,w,44,22); c.fill();
+        c.fillStyle="#fff"; c.fillText(txt,W-PAD-w+16,yy+34);
+      }else if(b.type==="empty"){
+        c.fillStyle="#44515c"; c.font="bold 38px "+F; c.textAlign="center";
+        c.fillText("Nenhum mesário corresponde ao filtro.",W/2,yb+96);
+        c.textAlign="left";
+      }
+      yb+=b.h;
+    });
+    c.fillStyle="#8a97a2"; c.font="24px "+F;
+    c.fillText("Lista de mesários · Teonizia",PAD,H-30);
+    if(N>1){c.textAlign="right";c.fillText(`Parte ${pi+1} de ${N}`,W-PAD,H-30);c.textAlign="left";}
+    arquivos.push(canvasParaArquivo(cv,`mesarios-presenca_${stamp}${N>1?"_parte"+(pi+1):""}.jpg`));
+  }
+
+  const prev=document.getElementById("iPrev"); prev.innerHTML="";
+  arquivos.forEach(f=>{const im=new Image();im.src=f.dataURL;im.alt=f.name;im.title="Clique com o botão direito (ou pressione e segure) para salvar";prev.appendChild(im);});
+  document.getElementById("iTitle").textContent="Imagem – presença dos mesários";
+  document.getElementById("iInfo").textContent=(N>1?(umaPorSecao?`${N} imagens — uma por seção.`:`${N} imagens — nenhuma seção foi dividida.`):"1 imagem.")+" Se o botão Baixar não funcionar, clique com o botão direito na imagem (no celular, pressione e segure) e escolha “Salvar imagem”.";
+  let pode=false; try{pode=!!(navigator.canShare&&navigator.canShare({files:arquivos}));}catch(e){}
+  document.getElementById("btnShare").style.display=pode?"":"none";
+  document.getElementById("imgModal").classList.add("open");
+}
+async function compartilhar(){
+  try{ await navigator.share({files:arquivos,title:"Mesários – Teonizia"}); }
+  catch(e){ if(e&&e.name!=="AbortError") toast("Não foi possível compartilhar. Use Baixar JPEG."); }
+}
+async function baixar(){
+  try{
+    for(const f of arquivos){
+      const a=document.createElement("a"); a.href=f.dataURL; a.download=f.name;
+      document.body.appendChild(a); a.click(); a.remove();
+      await new Promise(r=>setTimeout(r,500));
+    }
+    toast(arquivos.length>1?`${arquivos.length} imagens enviadas para Downloads.`:"Imagem enviada para Downloads.");
+  }catch(e){
+    toast("Download bloqueado. Clique com o botão direito na imagem e escolha “Salvar imagem como”.");
+  }
+}
+document.addEventListener("keydown",e=>{if(e.key==="Escape")fechar();});
+document.getElementById("q").addEventListener("input",render);
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta name="robots" content="noindex,nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mesários – Teonizia (iPhone)</title>
+<style>
+:root{--bg:#f4f6f8;--card:#fff;--ink:#1d2730;--muted:#5f6f7c;--line:#dde3e8;--accent:#1f6f5c;--head:#1f4f5c;
+--ok:#1b7a3e;--oks:#e1f4e7;--no:#b42318;--nos:#fde8e6;--jur:#8a4b0f;--jurs:#fbeedd;--uli:#264f8c;--ulis:#e2ebf8}
+@media (prefers-color-scheme:dark){:root{--bg:#11171c;--card:#1a232a;--ink:#e6edf2;--muted:#9aabb8;--line:#2b3741;--accent:#5cc3a5;--head:#9fd0dc;
+--ok:#6fd896;--oks:#173726;--no:#ff8a80;--nos:#3d1c1a;--jur:#f0b071;--jurs:#3a2a17;--uli:#8db5f0;--ulis:#1b2c45}}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,system-ui,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);
+  counter-reset:pres aus;padding-bottom:84px;-webkit-text-size-adjust:100%}
+.rd{position:absolute;opacity:0;pointer-events:none}
+header{padding:18px 16px 6px}
+h1{margin:0;font-size:1.3rem}
+.sub{color:var(--muted);font-size:.88rem;margin-top:4px}
+.ctl{position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 16px 10px;border-bottom:1px solid var(--line)}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;align-items:center}
+.lbl{font-size:.74rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;min-width:52px}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:7px 12px;border-radius:999px;font-size:.9rem;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.trocar{display:none;border-style:dashed;color:var(--muted);background:transparent}
+/* chip selecionado */
+#c-all:checked~* label[for=c-all].todos,#c0:checked~* label[for=c0],#c1:checked~* label[for=c1],#c2:checked~* label[for=c2],#c3:checked~* label[for=c3],#c4:checked~* label[for=c4],#c5:checked~* label[for=c5],#c6:checked~* label[for=c6],
+#s-all:checked~* label[for=s-all],#s667:checked~* label[for=s667],#s750:checked~* label[for=s750],#s752:checked~* label[for=s752],#s766:checked~* label[for=s766],#s772:checked~* label[for=s772],#s781:checked~* label[for=s781],#s810:checked~* label[for=s810],#s835:checked~* label[for=s835],
+#st-t:checked~* label[for=st-t],#st-a:checked~* label[for=st-a],#st-p:checked~* label[for=st-p]
+{background:var(--accent);border-color:var(--accent);color:#fff}
+/* modo coordenador: esconde os outros nomes, a seção e mostra "Trocar" */
+body:has(#c-all:not(:checked)) #rs{display:none}
+body:has(#c-all:not(:checked)) #rc .todos{display:none}
+body:has(#c-all:not(:checked)) #rc .trocar{display:inline-block}
+body:has(#c-all:not(:checked)) #rc .trocar{order:99}
+body:has(#c0:checked) .sec:not(.s667){display:none}
+body:has(#c0:checked) #rc .chip:not([for=c0]):not(.trocar){display:none}
+body:has(#c1:checked) .sec:not(.s750){display:none}
+body:has(#c1:checked) #rc .chip:not([for=c1]):not(.trocar){display:none}
+body:has(#c2:checked) .sec:not(.s752):not(.s766){display:none}
+body:has(#c2:checked) #rc .chip:not([for=c2]):not(.trocar){display:none}
+body:has(#c3:checked) .sec:not(.s772){display:none}
+body:has(#c3:checked) #rc .chip:not([for=c3]):not(.trocar){display:none}
+body:has(#c4:checked) .sec:not(.s781){display:none}
+body:has(#c4:checked) #rc .chip:not([for=c4]):not(.trocar){display:none}
+body:has(#c5:checked) .sec:not(.s810){display:none}
+body:has(#c5:checked) #rc .chip:not([for=c5]):not(.trocar){display:none}
+body:has(#c6:checked) .sec:not(.s835){display:none}
+body:has(#c6:checked) #rc .chip:not([for=c6]):not(.trocar){display:none}
+body:has(#s667:checked) .sec:not(.s667){display:none}
+body:has(#s667:checked) #rs .chip:not([for=s667]):not(.trocar){display:none}
+body:has(#s750:checked) .sec:not(.s750){display:none}
+body:has(#s750:checked) #rs .chip:not([for=s750]):not(.trocar){display:none}
+body:has(#s752:checked) .sec:not(.s752){display:none}
+body:has(#s752:checked) #rs .chip:not([for=s752]):not(.trocar){display:none}
+body:has(#s766:checked) .sec:not(.s766){display:none}
+body:has(#s766:checked) #rs .chip:not([for=s766]):not(.trocar){display:none}
+body:has(#s772:checked) .sec:not(.s772){display:none}
+body:has(#s772:checked) #rs .chip:not([for=s772]):not(.trocar){display:none}
+body:has(#s781:checked) .sec:not(.s781){display:none}
+body:has(#s781:checked) #rs .chip:not([for=s781]):not(.trocar){display:none}
+body:has(#s810:checked) .sec:not(.s810){display:none}
+body:has(#s810:checked) #rs .chip:not([for=s810]):not(.trocar){display:none}
+body:has(#s835:checked) .sec:not(.s835){display:none}
+body:has(#s835:checked) #rs .chip:not([for=s835]):not(.trocar){display:none}
+body:has(#s-all:not(:checked)) #rc{display:none}
+body:has(#s-all:not(:checked)) #rs .trocar{display:inline-block;order:99}
+.ft{display:none}.ft::before{content:"Filtro: "}body:has(.ft-on) .x{}
+body:has(#c0:checked) .fc0{display:inline}
+body:has(#c1:checked) .fc1{display:inline}
+body:has(#c2:checked) .fc2{display:inline}
+body:has(#c3:checked) .fc3{display:inline}
+body:has(#c4:checked) .fc4{display:inline}
+body:has(#c5:checked) .fc5{display:inline}
+body:has(#c6:checked) .fc6{display:inline}
+body:has(#s667:checked) .fs667{display:inline}
+body:has(#s750:checked) .fs750{display:inline}
+body:has(#s752:checked) .fs752{display:inline}
+body:has(#s766:checked) .fs766{display:inline}
+body:has(#s772:checked) .fs772{display:inline}
+body:has(#s781:checked) .fs781{display:inline}
+body:has(#s810:checked) .fs810{display:inline}
+body:has(#s835:checked) .fs835{display:inline}
+body:has(#st-a:checked) .fsa,body:has(#st-p:checked) .fsp{display:inline}
+body:has(#c-all:not(:checked)) .fs667,body:has(#c-all:not(:checked)) .fs750,body:has(#c-all:not(:checked)) .fs752,body:has(#c-all:not(:checked)) .fs766,body:has(#c-all:not(:checked)) .fs772,body:has(#c-all:not(:checked)) .fs781,body:has(#c-all:not(:checked)) .fs810,body:has(#c-all:not(:checked)) .fs835{display:none}
+body:has(#c0:checked) .ms667{background:#1f6f5c;color:#fff;border-color:#0d3b30;z-index:2;box-shadow:0 0 0 .7cqw rgba(31,111,92,.35)}
+body:has(#c0:checked) .ms:not(.ms667){opacity:.35}
+body:has(#c1:checked) .ms750{background:#1f6f5c;color:#fff;border-color:#0d3b30;z-index:2;box-shadow:0 0 0 .7cqw rgba(31,111,92,.35)}
+body:has(#c1:checked) .ms:not(.ms750){opacity:.35}
+body:has(#c2:checked) .ms752,body:has(#c2:checked) .ms766{background:#1f6f5c;color:#fff;border-color:#0d3b30;z-index:2;box-shadow:0 0 0 .7cqw rgba(31,111,92,.35)}
+body:has(#c2:checked) .ms:not(.ms752):not(.ms766){opacity:.35}
+body:has(#c3:checked) .ms772{background:#1f6f5c;color:#fff;border-color:#0d3b30;z-index:2;box-shadow:0 0 0 .7cqw rgba(31,111,92,.35)}
+body:has(#c3:checked) .ms:not(.ms772){opacity:.35}
+body:has(#c4:checked) .ms781{background:#1f6f5c;color:#fff;border-color:#0d3b30;z-index:2;box-shadow:0 0 0 .7cqw rgba(31,111,92,.35)}
+body:has(#c4:checked) .ms:not(.ms781){opacity:.35}
+body:has(#c5:checked) .ms810{background:#1f6f5c;color:#fff;border-color:#0d3b30;z-index:2;box-shadow:0 0 0 .7cqw rgba(31,111,92,.35)}
+body:has(#c5:checked) .ms:not(.ms810){opacity:.35}
+body:has(#c6:checked) .ms835{background:#1f6f5c;color:#fff;border-color:#0d3b30;z-index:2;box-shadow:0 0 0 .7cqw rgba(31,111,92,.35)}
+body:has(#c6:checked) .ms:not(.ms835){opacity:.35}
+body:has(#s667:checked) .ms667{background:#1f6f5c;color:#fff;border-color:#0d3b30;z-index:2;box-shadow:0 0 0 .7cqw rgba(31,111,92,.35)}
+body:has(#s667:checked) .ms:not(.ms667){opacity:.35}
+body:has(#s750:checked) .ms750{background:#1f6f5c;color:#fff;border-color:#0d3b30;z-index:2;box-shadow:0 0 0 .7cqw rgba(31,111,92,.35)}
+body:has(#s750:checked) .ms:not(.ms750){opacity:.35}
+body:has(#s752:checked) .ms752{background:#1f6f5c;color:#fff;border-color:#0d3b30;z-index:2;box-shadow:0 0 0 .7cqw rgba(31,111,92,.35)}
+body:has(#s752:checked) .ms:not(.ms752){opacity:.35}
+body:has(#s766:checked) .ms766{background:#1f6f5c;color:#fff;border-color:#0d3b30;z-index:2;box-shadow:0 0 0 .7cqw rgba(31,111,92,.35)}
+body:has(#s766:checked) .ms:not(.ms766){opacity:.35}
+body:has(#s772:checked) .ms772{background:#1f6f5c;color:#fff;border-color:#0d3b30;z-index:2;box-shadow:0 0 0 .7cqw rgba(31,111,92,.35)}
+body:has(#s772:checked) .ms:not(.ms772){opacity:.35}
+body:has(#s781:checked) .ms781{background:#1f6f5c;color:#fff;border-color:#0d3b30;z-index:2;box-shadow:0 0 0 .7cqw rgba(31,111,92,.35)}
+body:has(#s781:checked) .ms:not(.ms781){opacity:.35}
+body:has(#s810:checked) .ms810{background:#1f6f5c;color:#fff;border-color:#0d3b30;z-index:2;box-shadow:0 0 0 .7cqw rgba(31,111,92,.35)}
+body:has(#s810:checked) .ms:not(.ms810){opacity:.35}
+body:has(#s835:checked) .ms835{background:#1f6f5c;color:#fff;border-color:#0d3b30;z-index:2;box-shadow:0 0 0 .7cqw rgba(31,111,92,.35)}
+body:has(#s835:checked) .ms:not(.ms835){opacity:.35}
+main{padding:4px 16px 20px}
+.sec{margin-top:16px;counter-reset:sp st}
+.sec h2{font-size:1.05rem;margin:0 0 4px;display:flex;align-items:center;gap:8px}
+.tag{font-size:.72rem;font-weight:600;padding:2px 8px;border-radius:6px}
+.tag.Juracy{background:var(--jurs);color:var(--jur)} .tag.Ulisses{background:var(--ulis);color:var(--uli)} .tag.none{background:var(--line);color:var(--muted)}
+.coord{font-size:.8rem;color:var(--muted);margin-bottom:8px}
+a{color:var(--accent);text-decoration:none}
+.lista{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.m{display:block;position:relative;padding:10px 12px 10px 16px;border-bottom:1px solid var(--line);border-left:6px solid var(--no);cursor:pointer;-webkit-tap-highlight-color:transparent;
+  counter-increment:aus st}
+.m:last-child{border-bottom:none}
+.m .ck{position:absolute;opacity:0;pointer-events:none}
+.m:has(.ck:checked){background:var(--oks);border-left-color:var(--ok);counter-increment:pres sp st}
+.fun{display:block;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--accent)}
+.nome{display:block;font-size:.98rem;margin:1px 0 3px;padding-right:110px}
+.wa{font-size:.8rem;font-weight:600}
+.dd{display:block;font-size:.84rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.bt{position:absolute;right:10px;top:10px}
+.bt::after{content:"Marcar chegada";display:inline-block;border:2px solid var(--no);background:var(--nos);color:var(--no);border-radius:8px;padding:5px 8px;font-size:.78rem;font-weight:700}
+.m:has(.ck:checked) .bt::after{content:"✓ Presente";border-color:var(--ok);background:var(--ok);color:#fff}
+/* filtro de situação: recolhe (sem tirar da contagem) */
+body:has(#st-a:checked) .m:has(.ck:checked),body:has(#st-p:checked) .m:not(:has(.ck:checked)){height:0;padding:0;border:0;overflow:hidden}
+.sp{font-size:.8rem;color:var(--muted);text-align:right;margin-top:4px}
+.sp::after{content:counter(sp) "/" counter(st) " presentes nesta seção"}
+/* placar fixo no rodapé (vem depois da lista, por isso conta só o que está visível no filtro) */
+.placar{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--card);border-top:1px solid var(--line);padding:10px 16px calc(10px + env(safe-area-inset-bottom));display:flex;gap:8px}
+.placar div{flex:1;border-radius:10px;padding:8px 10px;font-size:.78rem;text-transform:uppercase;letter-spacing:.03em;font-weight:600}
+.placar .p{background:var(--oks);color:var(--ok)} .placar .a{background:var(--nos);color:var(--no)}
+.placar .p::before{content:counter(pres);display:block;font-size:1.4rem;text-transform:none}
+.placar .a::before{content:counter(aus);display:block;font-size:1.4rem;text-transform:none}
+/* ---------- MODO IMAGEM (sem script): layout pronto para print ---------- */
+.mi-on{display:inline-block;background:var(--head);border-color:var(--head);color:#fff;font-weight:600}
+.banner{display:none;background:#1f4f5c;color:#fff;padding:16px 16px 14px}
+.banner b{display:block;font-size:1.35rem;letter-spacing:.01em}
+.banner small{display:block;font-size:.85rem;opacity:.9;margin-top:2px}
+.banner .ft{font-size:.82rem;font-weight:700;margin-right:8px}
+.banner .sair{float:right;font-size:.75rem;border:1px solid rgba(255,255,255,.6);border-radius:999px;padding:4px 10px;color:#fff;cursor:pointer}
+body:has(#mi:checked){background:#fff;color:#1d2730}
+body:has(#mi:checked) header,body:has(#mi:checked) .ctl{display:none}
+body:has(#mi:checked) .banner{display:block}
+body:has(#mi:checked) .lista{background:#fff;border-color:#dde3e8}
+body:has(#mi:checked) .m{pointer-events:none;background:#fdf1f0;color:#1d2730;border-bottom-color:#fff}
+body:has(#mi:checked) .m:has(.ck:checked){background:#eef8f1}
+body:has(#mi:checked) .bt::after{content:"✗ AUSENTE";border:0;background:#b42318;color:#fff;border-radius:999px;padding:4px 10px}
+body:has(#mi:checked) .m:has(.ck:checked) .bt::after{content:"✓ PRESENTE";background:#1b7a3e}
+body:has(#mi:checked) .sec h2{background:#e8eef0;color:#1f4f5c;padding:6px 10px;border-radius:8px}
+body:has(#mi:checked) .coord,body:has(#mi:checked) .sp,body:has(#mi:checked) .dd{color:#44515c}
+body:has(#mi:checked) .fun{color:#1f4f5c}
+body:has(#mi:checked) .placar{background:#fff;border-top-color:#dde3e8}
+body:has(#mi:checked) .placar .p{background:#eef8f1;color:#1b7a3e}
+body:has(#mi:checked) .placar .a{background:#fdf1f0;color:#b42318}
+/* painel de coordenadores */
+.clv{display:none;position:fixed;inset:0;z-index:30;background:#fff;color:#1d2730;overflow:auto;-webkit-overflow-scrolling:touch}
+body:has(#cl:checked) .clv{display:block}
+.cbanner{background:#1f4f5c;color:#fff;padding:16px}
+.cbanner b{display:block;font-size:1.35rem} .cbanner small{display:block;font-size:.85rem;opacity:.9}
+.cbanner .sair{float:right;font-size:.75rem;border:1px solid rgba(255,255,255,.6);border-radius:999px;padding:4px 10px;color:#fff;cursor:pointer}
+.ctb{width:100%;border-collapse:collapse}
+.ctb td{padding:10px 16px;border-bottom:1px solid #e3e8ec;vertical-align:top;font-size:.95rem}
+.ctb tr:nth-child(even) td{background:#f4f7f8}
+.ctb td.cs{font-size:1.5rem;font-weight:800;color:#1f4f5c;width:72px;line-height:1}
+.ctb small{display:block;color:#5f6f7c;font-size:.78rem;font-weight:400;margin-top:2px}
+.ctb td b{display:block} .ctb td b+small{margin-bottom:6px}
+.cdica{font-size:.78rem;color:#5f6f7c;padding:10px 16px 30px}
+/* modo imagem sem filtro: uma seção por tela, sem quebrar */
+body:has(#mi:checked) .banner{position:sticky;top:0;z-index:7}
+html:has(#mi:checked):has(#c-all:checked):has(#s-all:checked){scroll-snap-type:y mandatory}
+body:has(#mi:checked):has(#c-all:checked):has(#s-all:checked) .sec{min-height:calc(100svh - 84px - 96px);scroll-snap-align:start;scroll-margin-top:96px;margin-top:0;padding-top:12px}
+body:has(#mi:checked):has(#c-all:checked):has(#s-all:checked) .banner{height:96px;box-sizing:border-box}
+.uma{display:none;font-size:.75rem;opacity:.9}
+body:has(#mi:checked):has(#c-all:checked):has(#s-all:checked) .uma{display:block}
+/* impressão / PDF: mostra Presente ou Ausente */
+@media print{
+  .ctl,header .aviso,.mapa,.banner,.clv,.mi-on{display:none !important}
+  .placar{position:static;border:0}
+  body{background:#fff;padding-bottom:0}
+  .sec{break-inside:avoid}
+  .bt::after{content:"Ausente";background:#fff;border:1.5px solid #b42318;color:#b42318}
+  .m:has(.ck:checked) .bt::after{content:"Presente";background:#fff;border-color:#1b7a3e;color:#1b7a3e}
+  .m,.m:has(.ck:checked){background:#fff}
+}
+.aviso{background:#fff4d6;color:#5c4400;border:1px solid #f0d78a;border-radius:10px;padding:9px 12px;font-size:.84rem;margin-top:10px}
+
+.mapa{margin:12px 0 4px;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.mapa summary{cursor:pointer;padding:10px 12px;font-weight:600;font-size:.92rem;list-style:none}
+.mapa summary::-webkit-details-marker{display:none}
+.mapa summary::after{content:"▾";float:right;color:var(--muted)}
+.mapa[open] summary::after{content:"▴"}
+.mwrap{position:relative;container-type:inline-size;margin:0 auto 8px;width:min(calc(100% - 8px),calc((100svh - 150px) * 1.1707))}
+.planta{display:block;width:100%;height:auto}
+.ms{position:absolute;box-sizing:border-box;border:max(2px,.45cqw) solid #141414;background:#fff;color:#141414;padding:0;margin:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;font-family:Arial,sans-serif;cursor:pointer;overflow:hidden;white-space:nowrap;
+  transition:background .2s,opacity .2s;-webkit-tap-highlight-color:transparent;line-height:1.05}
+.ms svg{width:100%;height:100%;display:block;fill:currentColor;font-family:Arial,Helvetica,sans-serif}
+.ms.on{background:#1f6f5c;color:#fff;border-color:#0d3b30;z-index:2;box-shadow:0 0 0 .7cqw rgba(31,111,92,.35)}
+.mwrap.foco .ms:not(.on){opacity:.35}
+.ms.ok .mc{fill:#1b7a3e} .ms.on.ok .mc{fill:#c9f5d7}
+.mleg{font-size:.78rem;color:var(--muted);padding:0 12px 10px}
+
+.ms .mc{display:none}
+body:has(#mi:checked) .mapa{display:none}
+</style>
+</head>
+<body>
+<input type="radio" name="co" id="c-all" class="rd" checked><input type="radio" name="co" id="c0" class="rd"><input type="radio" name="co" id="c1" class="rd"><input type="radio" name="co" id="c2" class="rd"><input type="radio" name="co" id="c3" class="rd"><input type="radio" name="co" id="c4" class="rd"><input type="radio" name="co" id="c5" class="rd"><input type="radio" name="co" id="c6" class="rd"><input type="radio" name="se" id="s-all" class="rd" checked><input type="radio" name="se" id="s667" class="rd"><input type="radio" name="se" id="s750" class="rd"><input type="radio" name="se" id="s752" class="rd"><input type="radio" name="se" id="s766" class="rd"><input type="radio" name="se" id="s772" class="rd"><input type="radio" name="se" id="s781" class="rd"><input type="radio" name="se" id="s810" class="rd"><input type="radio" name="se" id="s835" class="rd"><input type="checkbox" id="mi" class="rd"><input type="checkbox" id="cl" class="rd"><input type="radio" name="st" id="st-t" class="rd" checked><input type="radio" name="st" id="st-a" class="rd"><input type="radio" name="st" id="st-p" class="rd">
+<div class="banner"><label class="sair" for="mi">✕ Sair</label><b>PRESENÇA DOS MESÁRIOS</b><small>Centro de Convivência Teonizia</small><span class="ft fc0">Coord. Mazoniel Reis (Seção 667)</span><span class="ft fc1">Coord. Carla Bernhard (Seção 750)</span><span class="ft fc2">Coord. Gustavo Bernhard (Seção 752 e 766)</span><span class="ft fc3">Coord. Denilson Carvalho (Seção 772)</span><span class="ft fc4">Coord. Alesson Miranda (Seção 781)</span><span class="ft fc5">Coord. Debora Albuquerque (Seção 810)</span><span class="ft fc6">Coord. Olívia Bezerra (Seção 835)</span><span class="ft fs667">Seção 667</span><span class="ft fs750">Seção 750</span><span class="ft fs752">Seção 752</span><span class="ft fs766">Seção 766</span><span class="ft fs772">Seção 772</span><span class="ft fs781">Seção 781</span><span class="ft fs810">Seção 810</span><span class="ft fs835">Seção 835</span><span class="ft fsa">Somente ausentes</span><span class="ft fsp">Somente presentes</span><span class="uma">Uma seção por tela — role e tire um print de cada.</span></div>
+<header>
+  <h1>Mesários – Centro de Convivência Teonizia</h1>
+  <div class="sub">Versão para iPhone · 8 seções · 32 mesários · <a href="index.html">versão completa</a></div>
+  <div class="aviso">Toque no mesário para marcar a chegada. <b>Não feche o arquivo</b> durante a conferência: as marcações se perdem ao fechar. Para enviar no WhatsApp, toque em <b>📸 Modo imagem</b> e tire um print da tela.</div>
+</header>
+<div class="ctl">
+  <div class="row"><label class="chip mi-on" for="mi">📸 Modo imagem (para print)</label><label class="chip" for="cl">👥 Coordenadores</label></div>
+  <div class="row" id="rc"><span class="lbl">Coord.</span><label class="chip todos" for="c-all">Todos</label><label class="chip" for="c0">Mazoniel Reis</label><label class="chip" for="c1">Carla Bernhard</label><label class="chip" for="c2">Gustavo Bernhard</label><label class="chip" for="c3">Denilson Carvalho</label><label class="chip" for="c4">Alesson Miranda</label><label class="chip" for="c5">Debora Albuquerque</label><label class="chip" for="c6">Olívia Bezerra</label><label class="chip trocar" for="c-all">✕ Trocar coordenador</label></div>
+  <div class="row" id="rs"><span class="lbl">Seção</span><label class="chip" for="s-all">Todas</label><label class="chip" for="s667">667</label><label class="chip" for="s750">750</label><label class="chip" for="s752">752</label><label class="chip" for="s766">766</label><label class="chip" for="s772">772</label><label class="chip" for="s781">781</label><label class="chip" for="s810">810</label><label class="chip" for="s835">835</label><label class="chip trocar" for="s-all">✕ Trocar seção</label></div>
+  <div class="row" id="rt"><span class="lbl">Situação</span><label class="chip" for="st-t">Todos</label><label class="chip" for="st-a">Ausentes</label><label class="chip" for="st-p">Presentes</label></div>
+</div>
+<main><section class="sec s667"><h2>Seção 667 <span class="tag Juracy">Juracy</span></h2><div class="coord">👤 Mazoniel Guedes Reis · <a href="tel:+5592981925319">(92) 98192-5319</a></div><div class="lista"><label class="m"><input type="checkbox" class="ck"><span class="bt"></span>
+<span class="fun">Presidente</span><b class="nome">FABIOLA VASCONCELOS AMORIM SANTOS</b>
+<span class="dd">Tel.: <a href="tel:+5592994298334">(92) 99429-8334</a> &nbsp;<a class="wa" href="https://wa.me/5592994298334">WhatsApp</a></span></label><label class="m"><input type="checkbox" class="ck"><span class="bt"></span>
+<span class="fun">1º Mesário</span><b class="nome">JAQUELINE CORDEIRO CAMPOS</b>
+<span class="dd">Tel.: <a href="tel:+5592994406063">(92) 99440-6063</a> &nbsp;<a class="wa" href="https://wa.me/5592994406063">WhatsApp</a></span></label><label class="m"><input type="checkbox" class="ck"><span class="bt"></span>
+<span class="fun">2º Mesário</span><b class="nome">MARILENE MARTINS DE SOUZA VIEGAS</b>
+<span class="dd">Tel.: <a href="tel:+5592981211776">(92) 98121-1776</a> &nbsp;<a class="wa" href="https://wa.me/5592981211776">WhatsApp</a></span></label><label class="m"><input type="checkbox" class="ck"><span class="bt"></span>
+<span class="fun">Secretário</span><b class="nome">REINALDO DE JESUS MENDONCA DE ALENCAR</b>
+<span class="dd">Tel.: <a href="tel:+5592994752721">(92) 99475-2721</a> &nbsp;<a class="wa" href="https://wa.me/5592994752721">WhatsApp</a></span></label></div><div class="sp"></div></section><section class="sec s750"><h2>Seção 750 <span class="tag Ulisses">Ulisses</span></h2><div class="coord">👤 Carla Conde Marques e Oliveira Bernhard · <a href="tel:+5592981520768">(92) 98152-0768</a></div><div class="lista"><label class="m"><input type="checkbox" class="ck"><span class="bt"></span>
+<span class="fun">Presidente</span><b class="nome">ZENAIDE RAMOS LIMA</b>
+<span class="dd">Tel.: <a href="tel:+5592993533306">(92) 99353-3306</a> &nbsp;<a class="wa" href="https://wa.me/5592993533306">WhatsApp</a></span></label><label class="m"><input type="checkbox" class="ck"><span class="bt"></span>
+<span class="fun">1º Mesário</span><b class="nome">LORENA VICTORIA DE OLIVEIRA TAVARES</b>
+<span class="dd">Tel.: <a href="tel:+5592993969668">(92) 99396-9668</a> &nbsp;<a class="wa" href="https://wa.me/5592993969668">WhatsApp</a></span></label><label class="m"><input type="checkbox" class="ck"><span class="bt"></span>
+<span class="fun">2º Mesário</span><b class="nome">PENELOPE ARYADNE ANTONY LIRA</b>
+<span class="dd">Tel.: <a href="tel:+5592991223569">(92) 99122-3569</a> &nbsp;<a class="wa" href="https://wa.me/5592991223569">WhatsApp</a></span></label><label class="m"><input type="checkbox" class="ck"><span class="bt"></span>
+<span class="fun">Secretário</span><b class="nome">LUCAS SOARES MAIA</b>
+<span class="dd">Tel.: <a href="tel:+5592985453608">(92) 98545-3608</a> &nbsp;<a class="wa" href="https://wa.me/5592985453608">WhatsApp</a></span></label></div><div class="sp"></div></section><section class="sec s752"><h2>Seção 752 <span class="tag Juracy">Juracy</span></h2><div class="coord">👤 Gustavo Galdino Rodrigues Bernhard · <a href="tel:+5592991610768">(92) 99161-0768</a></div><div class="lista"><label class="m"><input type="checkbox" class="ck"><span class="bt"></span>
+<span class="fun">Presidente</span><b class="nome">SAVANA FURTADO PEREIRA</b>
+<span class="dd">Tel.: <a href="tel:+5592994591724">(92) 99459-1724</a> &nbsp;<a class="wa" href="https://wa.me/5592994591724">WhatsApp</a></span></label><label class="m"><input type="checkbox" class="ck"><span class="bt"></span>
+<span class="fun">1º Mesário</span><b class="nome">ANDREIA LIMA RODRIGUES</b>
+<span class="dd">Tel.: <a href="tel:+5592991541788">(92) 99154-1788</a> &nbsp;<a class="wa" href="https://wa.me/5592991541788">WhatsApp</a></span></label><label class="m"><input type="checkbox" class="ck"><span class="bt"></span>
+<span class="fun">2º Mesário</span><b class="nome">JOICY FERNANDA DOS SANTOS SOUSA</b>
+<span class="dd">Tel.: <a href="tel:+5592984351005">(92) 98435-1005</a> &nbsp;<a class="wa" href="https://wa.me/5592984351005">WhatsApp</a></span></label><label class="m"><input type="checkbox" class="ck"><span class="bt"></span>
+<span class="fun">Secretário</span><b class="nome">BRUNA OLIVEIRA DOS SANTOS</b>
+<span class="dd">Tel.: <a href="tel:+5592995261542">(92) 99526-1542</a> &nbsp;<a class="wa" href="https://wa.me/5592995261542">WhatsApp</a></span></label></div><div class="sp"></div></section><section class="sec s766"><h2>Seção 766 <span class="tag Juracy">Juracy</span></h2><div class="coord">👤 Gustavo Galdino Rodrigues Bernhard · <a href="tel:+5592991610768">(92) 99161-0768</a></div><div class="lista"><label class="m"><input type="checkbox" class="ck"><span class="bt"></span>
+<span class="fun">Presidente</span><b class="nome">LUANA BARBOSA DO NASCIMENTO</b>
+<span class="dd">Tel.: <a href="tel:+5592991086991">(92) 99108-6991</a> &nbsp;<a class="wa" href="https://wa.me/5592991086991">WhatsApp</a></span></label><label class="m"><input type="checkbox" class="ck"><span class="bt"></span>
+<span class="fun">1º Mesário</span><b class="nome">MOISÉS GONÇALVES RODRIGUES</b>
+<span class="dd">Tel.: <a href="tel:+5592984227985">(92) 98422-7985</a> &nbsp;<a class="wa" href="https://wa.me/5592984227985">WhatsApp</a></span></label><label class="m"><input type="checkbox" class="ck"><span class="bt"></span>
+<span class="fun">2º Mesário</span><b class="nome">VITOR DA CRUZ SARMENTO</b>
+<span class="dd">Tel.: <a href="tel:+5592984392140">(92) 98439-2140</a> &nbsp;<a class="wa" href="https://wa.me/5592984392140">WhatsApp</a></span></label><label class="m"><input type="checkbox" class="ck"><span class="bt"></span>
+<span class="fun">Secretário</span><b class="nome">ADRIA DOS SANTOS TAVEIRA</b>
+<span class="dd">Tel.: <a href="tel:+5592991124363">(92) 99112-4363</a> &nbsp;<a class="wa" href="https://wa.me/5592991124363">WhatsApp</a></span></label></div><div class="sp"></div></section><section class="sec s772"><h2>Seção 772 <span class="tag Ulisses">Ulisses</span></h2><div class="coord">👤 Denilson de Albuquerque Carvalho · <a href="tel:+5592986236213">(92) 98623-6213</a></div><div class="lista"><label class="m"><input type="checkbox" class="ck"><span class="bt"></span>
+<span class="fun">Presidente</span><b class="nome">SAMUEL PASSOS PEREIRA</b>
+<span class="dd">Tel.: <a href="tel:+5592992747868">(92) 99274-7868</a> &nbsp;<a class="wa" href="https://wa.me/5592992747868">WhatsApp</a></span></label><label class="m"><input type="checkbox" class="ck"><span class="bt"></span>
+<span class="fun">1º Mesário</span><b class="nome">HELENA ANDRADE DOS SANTOS</b>
+<span class="dd">Tel.: <a href="tel:+5592992298529">(92) 99229-8529</a> &nbsp;<a class="wa" href="https://wa.me/5592992298529">WhatsApp</a></span></label><label class="m"><input type="checkbox" class="ck"><span class="bt"></span>
+<span class="fun">2º Mesário</span><b class="nome">TAIANA MOTA DOS REIS</b>
+<span class="dd">Tel.: <a href="tel:+5592992764410">(92) 99276-4410</a> &nbsp;<a class="wa" href="https://wa.me/5592992764410">WhatsApp</a></span></label><label class="m"><input type="checkbox" class="ck"><span class="bt"></span>
+<span class="fun">Secretário</span><b class="nome">GABRIELLE RIBEIRO ARAUJO</b>
+<span class="dd">Tel.: <a href="tel:+5592992418563">(92) 99241-8563</a> &nbsp;<a class="wa" href="https://wa.me/5592992418563">WhatsApp</a></span></label></div><div class="sp"></div></section><section class="sec s781"><h2>Seção 781 <span class="tag Ulisses">Ulisses</span></h2><div class="coord">👤 Alesson Miranda Pereira · <a href="tel:+5592992983968">(92) 99298-3968</a></div><div class="lista"><label class="m"><input type="checkbox" class="ck"><span class="bt"></span>
+<span class="fun">Presidente</span><b class="nome">PAULA JANINE BRANDAO CANDIDO</b>
+<span class="dd">Tel.: <a href="tel:+5592995055354">(92) 99505-5354</a> &nbsp;<a class="wa" href="https://wa.me/5592995055354">WhatsApp</a></span></label><label class="m"><input type="checkbox" class="ck"><span class="bt"></span>
+<span class="fun">1º Mesário</span><b class="nome">ROBERTA ALBUQUERQUE DUTRA</b>
+<span class="dd">Tel.: <a href="tel:+5592995349670">(92) 99534-9670</a> &nbsp;<a class="wa" href="https://wa.me/5592995349670">WhatsApp</a></span></label><label class="m"><input type="checkbox" class="ck"><span class="bt"></span>
+<span class="fun">2º Mesário</span><b class="nome">KAROLINE BRAZÃO DA SILVA</b>
+<span class="dd">Tel.: <a href="tel:+5592984567757">(92) 98456-7757</a> &nbsp;<a class="wa" href="https://wa.me/5592984567757">WhatsApp</a></span></label><label class="m"><input type="checkbox" class="ck"><span class="bt"></span>
+<span class="fun">Secretário</span><b class="nome">MARA TATIANE SILVA DOS SANTOS MARIALVA</b>
+<span class="dd">Tel.: <a href="tel:+5592984366440">(92) 98436-6440</a> &nbsp;<a class="wa" href="https://wa.me/5592984366440">WhatsApp</a></span></label></div><div class="sp"></div></section><section class="sec s810"><h2>Seção 810 <span class="tag none">escola não informada</span></h2><div class="coord">👤 Debora Silva de Albuquerque · <a href="tel:+5592991814545">(92) 99181-4545</a></div><div class="lista"><label class="m"><input type="checkbox" class="ck"><span class="bt"></span>
+<span class="fun">Presidente</span><b class="nome">JEFFERSON CONCEICAO DE OLIVEIRA</b>
+<span class="dd">Tel.: <a href="tel:+5592991543244">(92) 99154-3244</a> &nbsp;<a class="wa" href="https://wa.me/5592991543244">WhatsApp</a></span></label><label class="m"><input type="checkbox" class="ck"><span class="bt"></span>
+<span class="fun">1º Mesário</span><b class="nome">JORLANDA ALVES DE AMORIM</b>
+<span class="dd">Tel.: <a href="tel:+5592988149003">(92) 98814-9003</a> &nbsp;<a class="wa" href="https://wa.me/5592988149003">WhatsApp</a></span></label><label class="m"><input type="checkbox" class="ck"><span class="bt"></span>
+<span class="fun">2º Mesário</span><b class="nome">ISABELLY CHRISTINY DE OLIVEIRA CARVALHO</b>
+<span class="dd">Tel.: <a href="tel:+5592995132860">(92) 99513-2860</a> &nbsp;<a class="wa" href="https://wa.me/5592995132860">WhatsApp</a></span></label><label class="m"><input type="checkbox" class="ck"><span class="bt"></span>
+<span class="fun">Secretário</span><b class="nome">IVAN LUIS ARRUDA FIGUEIRA</b>
+<span class="dd">Tel.: <a href="tel:+5592984623926">(92) 98462-3926</a> &nbsp;<a class="wa" href="https://wa.me/5592984623926">WhatsApp</a></span></label></div><div class="sp"></div></section><section class="sec s835"><h2>Seção 835 <span class="tag none">escola não informada</span></h2><div class="coord">👤 Olívia de Moraes Bezerra · <a href="tel:+5592981882616">(92) 98188-2616</a></div><div class="lista"><label class="m"><input type="checkbox" class="ck"><span class="bt"></span>
+<span class="fun">Presidente</span><b class="nome">JEANE LIMA DE OLIVEIRA</b>
+<span class="dd">Tel.: <a href="tel:+5592993282511">(92) 99328-2511</a> &nbsp;<a class="wa" href="https://wa.me/5592993282511">WhatsApp</a></span></label><label class="m"><input type="checkbox" class="ck"><span class="bt"></span>
+<span class="fun">1º Mesário</span><b class="nome">NAYARA DUARTE SICSU DE OLIVEIRA</b>
+<span class="dd">Tel.: <a href="tel:+5592992220244">(92) 99222-0244</a> &nbsp;<a class="wa" href="https://wa.me/5592992220244">WhatsApp</a></span></label><label class="m"><input type="checkbox" class="ck"><span class="bt"></span>
+<span class="fun">2º Mesário</span><b class="nome">SUZANA TAVEIRA DE SOUZA</b>
+<span class="dd">Tel.: <a href="tel:+559292901070">(92) 9290-1070</a> &nbsp;<a class="wa" href="https://wa.me/559292901070">WhatsApp</a></span></label><label class="m"><input type="checkbox" class="ck"><span class="bt"></span>
+<span class="fun">Secretário</span><b class="nome">ADRIEL OLIVEIRA DA SILVA</b>
+<span class="dd">Tel.: <a href="tel:+5592981161749">(92) 98116-1749</a> &nbsp;<a class="wa" href="https://wa.me/5592981161749">WhatsApp</a></span></label></div><div class="sp"></div></section><details class="mapa" open><summary>Mapa das seções</summary><div class="mwrap"><svg viewBox="0 170 1920 1640" class="planta" aria-hidden="true">
+<rect x="72" y="285" width="1776" height="1468" fill="#f1f1ed" stroke="#141414" stroke-width="9"/>
+<rect x="954" y="276" width="192" height="18" fill="#f1f1ed"/>
+<path d="M955 292 V388 A95 95 0 0 0 1050 292 M1145 292 V388 A95 95 0 0 1 1050 292" fill="none" stroke="#141414" stroke-width="2.5"/>
+<path d="M1050 185 V258 M1030 238 L1050 262 L1070 238" fill="none" stroke="#c4441b" stroke-width="7" stroke-linecap="round"/>
+<text x="1092" y="238" fill="#c4441b" font-size="34" font-weight="700" letter-spacing="7" font-family="Arial,sans-serif">ENTRADA</text>
+<text x="1767" y="350" text-anchor="middle" font-size="26" font-weight="700" font-family="Arial,sans-serif">N</text>
+<path d="M1767 368 L1745 445 L1767 425 L1790 445 Z" fill="#fff" stroke="#141414" stroke-width="3"/><path d="M1767 368 L1767 425 L1790 445 Z" fill="#141414"/>
+<circle cx="468" cy="680" r="210" fill="#fff" stroke="#141414" stroke-width="18"/>
+<circle cx="1510" cy="690" r="210" fill="#fff" stroke="#141414" stroke-width="18"/>
+<rect x="133" y="929" width="402" height="320" fill="#fff" stroke="#141414" stroke-width="18"/>
+<rect x="584" y="1069" width="1100" height="641" fill="#fff" stroke="#141414" stroke-width="18"/>
+<line x1="985" y1="1069" x2="985" y2="1710" stroke="#141414" stroke-width="10"/>
+</svg><label class="ms ms667" style="left:27.083%;top:20.488%;width:7.708%;height:11.707%" for="s667"><svg viewBox="0 0 148 192" preserveAspectRatio="xMidYMid meet"><text x="74.0" y="61.3" font-size="31" font-weight="700" text-anchor="middle">SEÇÃO</text><text x="74.0" y="116.2" font-size="52" font-weight="700" text-anchor="middle">667</text><text class="mc" x="74.0" y="152.9" font-size="27" font-weight="700" text-anchor="middle"></text></svg></label><label class="ms ms750" style="left:19.792%;top:46.341%;width:7.708%;height:8.659%" for="s750"><svg viewBox="0 0 148 142" preserveAspectRatio="xMidYMid meet"><text x="74.0" y="36.3" font-size="31" font-weight="700" text-anchor="middle">SEÇÃO</text><text x="74.0" y="91.2" font-size="52" font-weight="700" text-anchor="middle">750</text><text class="mc" x="74.0" y="128.0" font-size="27" font-weight="700" text-anchor="middle"></text></svg></label><label class="ms ms835" style="left:75.729%;top:32.317%;width:7.812%;height:11.585%" for="s835"><svg viewBox="0 0 150 190" preserveAspectRatio="xMidYMid meet"><text x="75.0" y="60.3" font-size="31" font-weight="700" text-anchor="middle">SEÇÃO</text><text x="75.0" y="115.2" font-size="52" font-weight="700" text-anchor="middle">835</text><text class="mc" x="75.0" y="151.9" font-size="27" font-weight="700" text-anchor="middle"></text></svg></label><label class="ms ms752" style="left:15.000%;top:54.878%;width:7.500%;height:10.732%" for="s752"><svg viewBox="0 0 144 176" preserveAspectRatio="xMidYMid meet"><text x="72.0" y="53.3" font-size="31" font-weight="700" text-anchor="middle">SEÇÃO</text><text x="72.0" y="108.2" font-size="52" font-weight="700" text-anchor="middle">752</text><text class="mc" x="72.0" y="144.9" font-size="27" font-weight="700" text-anchor="middle"></text></svg></label><label class="ms ms766" style="left:6.927%;top:54.878%;width:7.500%;height:10.732%" for="s766"><svg viewBox="0 0 144 176" preserveAspectRatio="xMidYMid meet"><text x="72.0" y="53.3" font-size="31" font-weight="700" text-anchor="middle">SEÇÃO</text><text x="72.0" y="108.2" font-size="52" font-weight="700" text-anchor="middle">766</text><text class="mc" x="72.0" y="144.9" font-size="27" font-weight="700" text-anchor="middle"></text></svg></label><label class="ms ms810" style="left:60.417%;top:55.000%;width:8.229%;height:11.585%" for="s810"><svg viewBox="0 0 158 190" preserveAspectRatio="xMidYMid meet"><text x="79.0" y="60.3" font-size="31" font-weight="700" text-anchor="middle">SEÇÃO</text><text x="79.0" y="115.2" font-size="52" font-weight="700" text-anchor="middle">810</text><text class="mc" x="79.0" y="151.9" font-size="27" font-weight="700" text-anchor="middle"></text></svg></label><label class="ms ms781" style="left:51.458%;top:69.756%;width:7.917%;height:9.634%" for="s781"><svg viewBox="0 0 152 158" preserveAspectRatio="xMidYMid meet"><text x="76.0" y="44.3" font-size="31" font-weight="700" text-anchor="middle">SEÇÃO</text><text x="76.0" y="99.2" font-size="52" font-weight="700" text-anchor="middle">781</text><text class="mc" x="76.0" y="135.9" font-size="27" font-weight="700" text-anchor="middle"></text></svg></label><label class="ms ms772" style="left:63.646%;top:81.098%;width:8.958%;height:12.500%" for="s772"><svg viewBox="0 0 172 205" preserveAspectRatio="xMidYMid meet"><text x="86.0" y="67.8" font-size="31" font-weight="700" text-anchor="middle">SEÇÃO</text><text x="86.0" y="122.7" font-size="52" font-weight="700" text-anchor="middle">772</text><text class="mc" x="86.0" y="159.4" font-size="27" font-weight="700" text-anchor="middle"></text></svg></label></div><div class="mleg">Toque numa seção do mapa para ver os mesários dela. A seção do filtro aplicado fica destacada.</div></details></main>
+<div class="clv"><div class="cbanner"><label class="sair" for="cl">✕ Fechar</label><b>COORDENADORES</b><small>Centro de Convivência Teonizia · por seção</small></div><table class="ctb"><tr><td class="cs">667<small>Juracy</small></td><td><b>Mazoniel Guedes Reis</b><small><a href="tel:+5592981925319">(92) 98192-5319</a></small></td></tr><tr><td class="cs">750<small>Ulisses</small></td><td><b>Carla Conde Marques e Oliveira Bernhard</b><small><a href="tel:+5592981520768">(92) 98152-0768</a></small></td></tr><tr><td class="cs">752<small>Juracy</small></td><td><b>Gustavo Galdino Rodrigues Bernhard</b><small><a href="tel:+5592991610768">(92) 99161-0768</a> · também seção 766</small></td></tr><tr><td class="cs">766<small>Juracy</small></td><td><b>Gustavo Galdino Rodrigues Bernhard</b><small><a href="tel:+5592991610768">(92) 99161-0768</a> · também seção 752</small></td></tr><tr><td class="cs">772<small>Ulisses</small></td><td><b>Denilson de Albuquerque Carvalho</b><small><a href="tel:+5592986236213">(92) 98623-6213</a></small></td></tr><tr><td class="cs">781<small>Ulisses</small></td><td><b>Alesson Miranda Pereira</b><small><a href="tel:+5592992983968">(92) 99298-3968</a></small></td></tr><tr><td class="cs">810<small></small></td><td><b>Debora Silva de Albuquerque</b><small><a href="tel:+5592991814545">(92) 99181-4545</a></small></td></tr><tr><td class="cs">835<small></small></td><td><b>Olívia de Moraes Bezerra</b><small><a href="tel:+5592981882616">(92) 98188-2616</a></small></td></tr></table><div class="cdica">Para enviar no WhatsApp, tire um print desta tela.</div></div>
+<div class="placar"><div class="p">Presentes</div><div class="a">Ausentes</div></div>
+</body>
+</html>
