@@ -29,6 +29,8 @@
   .stat span{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
   .stat.ok b{color:var(--ok)} .stat.no b{color:var(--no)}
   .bar{height:6px;background:var(--no-soft);border-radius:4px;margin-top:10px;overflow:hidden}
+  .sync{font-size:.8rem;margin-top:8px;color:var(--muted)} .sync.ok b{color:var(--ok)} .sync.off{color:var(--no)}
+  .nojs .sync{display:none}
   .bar i{display:block;height:100%;background:var(--ok);width:0;transition:width .3s}
   .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
   .controls{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 16px;max-width:1000px;margin:0 auto;border-bottom:1px solid var(--line)}
@@ -145,6 +147,7 @@
     <div class="stat no"><b id="nAus">32</b><span>Ausentes</span></div>
   </div>
   <div class="bar"><i id="barFill"></i></div>
+  <div class="sync" id="sync">Conectando…</div>
   <div class="actions">
     <button class="btn prim" onclick="imagem()">🖼️ Gerar imagem da presença</button>
     <button class="btn" onclick="abrirCoord()">👥 Coordenadores</button>
@@ -466,7 +469,7 @@ const msgWA=d=>`${MSG_WA}\n\n📌 *Cargo na mesa receptora:* ${d.fun}\n🗳️ *
 const SECS=[...new Set(D.map(d=>d.sec))];
 /* função na mesa: segue a ordem da lista dentro de cada seção */
 const FUNCOES=["Presidente","1º Mesário","2º Mesário","Secretário"];
-SECS.forEach(s=>D.filter(d=>d.sec===s).forEach((d,i)=>d.fun=FUNCOES[i]||""));
+SECS.forEach(s=>D.filter(d=>d.sec===s).forEach((d,i)=>{d.fun=FUNCOES[i]||"";d.id=s+"-"+(i+1);}));
 
 /* ---------- coordenadores: [nome, CPF, telefone, seção] ----------
    Para trocar a distribuição, basta mudar a seção na última coluna (mais de uma: "752,766"). */
@@ -487,30 +490,75 @@ const coordTxt=s=>coordsDe(s).map(c=>curto(c.nome)).join(" e ");
 
 let sec="", esc="", st="", coo="";
 
-/* ---------- presença (salva neste navegador) ---------- */
-const KEY="mesarios-teonizia-presenca";
-let P={};
-try{ P=JSON.parse(localStorage.getItem(KEY)||"{}")||{}; }catch(e){ P={}; }
-function salvar(){ try{ localStorage.setItem(KEY,JSON.stringify(P)); }catch(e){} }
+/* ---------- presença: compartilhada entre todos os coordenadores (Planilha Google) ---------- */
+const API="https://script.google.com/macros/s/AKfycbw2owU6F8LqG0tHwOg6ix7zc1KFl8CpH6ESKpXdMtiJyQrcHoNz_FLzqLRzHSuBi2tVpg/exec";   // endereço do Apps Script que grava na planilha
+const KEY="mesarios-teonizia-presenca-v2", KEYF="mesarios-teonizia-fila";
+let P={}, FILA={};     // FILA = marcações feitas aqui e ainda não enviadas {id: horário | 0 para desmarcar}
+try{ P=JSON.parse(localStorage.getItem(KEY)||"{}")||{}; FILA=JSON.parse(localStorage.getItem(KEYF)||"{}")||{}; }catch(e){ P={}; FILA={}; }
+function salvar(){ try{ localStorage.setItem(KEY,JSON.stringify(P)); localStorage.setItem(KEYF,JSON.stringify(FILA)); }catch(e){} }
 const hora=ts=>new Date(ts).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
 const agoraTxt=()=>new Date().toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"});
-
-function toggle(tit){
-  const d=D.find(x=>x.tit===tit);
-  if(P[tit]){
+let online=null, ultimaSync=0, enviando=false;
+function statusSync(){
+  const el=document.getElementById("sync"); if(!el) return;
+  const pend=Object.keys(FILA).length;
+  if(!API.startsWith("http")){ el.className="sync"; el.textContent="Marcações salvas só neste aparelho."; return; }
+  if(online){ el.className="sync ok"; el.innerHTML=`<b>●</b> Compartilhado com todos os coordenadores · atualizado às ${new Date(ultimaSync).toLocaleTimeString("pt-BR")}${pend?` · enviando ${pend}…`:""}`; }
+  else if(online===false){ el.className="sync off"; el.innerHTML=`<b>○</b> Sem conexão${pend?` · ${pend} marcação(ões) aguardando envio`:""} — tentando de novo…`; }
+  else { el.className="sync"; el.textContent="Conectando…"; }
+}
+function aplicaServidor(S){
+  const antes=JSON.stringify(P);
+  P=Object.assign({},S);
+  for(const id in FILA){ if(FILA[id]) P[id]=FILA[id]; else delete P[id]; }
+  salvar(); if(JSON.stringify(P)!==antes) render();
+}
+async function puxar(){
+  if(!API.startsWith("http")) return statusSync();
+  try{ const r=await fetch(API+"?t="+Date.now()); const j=await r.json(); if(j.ok){ online=true; ultimaSync=Date.now(); aplicaServidor(j.P); } }
+  catch(e){ online=false; }
+  statusSync();
+}
+async function enviar(){
+  if(!API.startsWith("http")||enviando) return;
+  const ids=Object.keys(FILA); if(!ids.length) return;
+  enviando=true;
+  try{
+    for(const id of ids){
+      const d=D.find(x=>x.id===id), ts=FILA[id];
+      const r=await fetch(API,{method:"POST",body:JSON.stringify({id,ts:ts||"",sec:d.sec,fun:d.fun,nome:d.nome})});
+      const j=await r.json(); if(!j.ok) throw new Error(j.erro||"erro");
+      if(FILA[id]===ts) delete FILA[id];
+      online=true; ultimaSync=Date.now(); aplicaServidor(j.P);
+    }
+  }catch(e){ online=false; }
+  finally{ enviando=false; salvar(); statusSync(); }
+}
+function toggle(id){
+  const d=D.find(x=>x.id===id);
+  if(P[id]){
     if(!confirm(`Desmarcar a chegada de ${d.nome}?`)) return;
-    delete P[tit];
+    delete P[id]; FILA[id]=0;
   }else{
-    P[tit]=Date.now();
-    toast(`${d.nome} marcado(a) como presente às ${hora(P[tit])}`);
+    P[id]=Date.now(); FILA[id]=P[id];
+    toast(`${d.nome} marcado(a) como presente às ${hora(P[id])}`);
   }
-  salvar(); render();
+  salvar(); render(); statusSync(); enviar();
 }
-function zerar(){
+async function zerar(){
   if(!Object.keys(P).length){ toast("Nenhuma presença marcada."); return; }
-  if(!confirm("Apagar TODAS as presenças marcadas? Isso não pode ser desfeito.")) return;
-  P={}; salvar(); render();
+  const t=prompt("Isto apaga TODAS as presenças para TODOS os coordenadores.\nPara confirmar, digite ZERAR:");
+  if(!t||t.trim().toUpperCase()!=="ZERAR") return;
+  if(API.startsWith("http")){
+    try{ const r=await fetch(API,{method:"POST",body:JSON.stringify({acao:"zerar"})}); const j=await r.json(); if(!j.ok) throw 0; }
+    catch(e){ toast("Sem conexão: não foi possível zerar agora."); return; }
+  }
+  P={}; FILA={}; salvar(); render(); statusSync();
 }
+setInterval(()=>{ enviar().then(puxar); },15000);
+document.addEventListener("visibilitychange",()=>{ if(!document.hidden){ enviar().then(puxar); } });
+window.addEventListener("online",()=>{ enviar().then(puxar); });
+setTimeout(()=>{ statusSync(); enviar().then(puxar); },0);
 
 /* ---------- utilidades ---------- */
 const norm=s=>s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
@@ -576,7 +624,7 @@ function atualizaMapa(list,filtrado){
   w.classList.toggle("foco",filtrado&&ativos.size>0);
   SECS.forEach(s=>{
     const el=w.querySelector(".ms"+s); if(!el) return;
-    const all=D.filter(d=>d.sec===s), pr=all.filter(d=>P[d.tit]).length;
+    const all=D.filter(d=>d.sec===s), pr=all.filter(d=>P[d.id]).length;
     el.classList.toggle("on",filtrado&&ativos.has(s));
     el.classList.toggle("ok",pr===all.length);
     el.querySelector(".mc").textContent=`${pr}/${all.length}`;
@@ -588,7 +636,7 @@ function render(){
   // placar = reflexo dos filtros (coordenador, seção, escola e busca); "Situação" não entra, senão um dos lados zeraria
   const tq=norm(document.getElementById("q").value).split(/\s+/).filter(Boolean);
   const U=D.filter(d=>(!coo||C[+coo].secs.includes(d.sec))&&(!sec||d.sec===sec)&&(!esc||(esc==="none"?!d.esc:d.esc===esc))&&tq.every(t=>norm(d.nome).includes(t)));
-  const nP=U.filter(d=>P[d.tit]).length;
+  const nP=U.filter(d=>P[d.id]).length;
   document.getElementById("nPres").textContent=nP;
   document.getElementById("nAus").textContent=U.length-nP;
   document.getElementById("barFill").style.width=(U.length?nP/U.length*100:0)+"%";
@@ -598,7 +646,7 @@ function render(){
     (!coo||C[+coo].secs.includes(d.sec)) &&
     (!sec||d.sec===sec) &&
     (!esc||(esc==="none"?!d.esc:d.esc===esc)) &&
-    (!st||(st==="pres"?!!P[d.tit]:!P[d.tit])) &&
+    (!st||(st==="pres"?!!P[d.id]:!P[d.id])) &&
     terms.every(t=>norm(d.nome).includes(t))
   );
   atualizaMapa(list,!!(coo||sec||esc||st||terms.length));
@@ -608,16 +656,16 @@ function render(){
   let html="";
   SECS.forEach(s=>{
     const rows=list.filter(d=>d.sec===s); if(!rows.length) return;
-    const all=D.filter(d=>d.sec===s), pr=all.filter(d=>P[d.tit]).length;
+    const all=D.filter(d=>d.sec===s), pr=all.filter(d=>P[d.id]).length;
     const e=all[0].esc;
     html+=`<section class="sec"><h2>Seção ${s} <span class="tag ${e||"none"}">${e||"escola não informada"}</span>
       <span class="coord">👤 ${coordsDe(s).map(c=>`${esc_(tc(c.nome))} · <a href="tel:+55${c.tel}">${fmtTel(c.tel)}</a>`).join(" &nbsp;|&nbsp; ")}</span>
       <span class="prog ${pr===all.length?"full":""}">${pr}/${all.length} presentes</span></h2>
     <table><thead><tr><th>Presença</th><th>Nome</th><th>Telefone</th></tr></thead><tbody>`;
     rows.forEach(d=>{
-      const p=P[d.tit];
+      const p=P[d.id];
       html+=`<tr class="${p?"pres":""}">
-        <td class="p" data-l=""><button class="pbtn ${p?"on":""}" onclick="toggle('${d.tit}')">${p?"✓ Chegou "+hora(p):"Marcar chegada"}</button><span class="pst ${p?"sim":"nao"}">${p?"Presente · "+hora(p):"Ausente"}</span></td>
+        <td class="p" data-l=""><button class="pbtn ${p?"on":""}" onclick="toggle('${d.id}')">${p?"✓ Chegou "+hora(p):"Marcar chegada"}</button><span class="pst ${p?"sim":"nao"}">${p?"Presente · "+hora(p):"Ausente"}</span></td>
         <td class="nome" data-l=""><span class="fun">${d.fun}</span>${hi(d.nome,terms)}${d.obs?`<span class="warn">⚠ ${esc_(d.obs)}</span>`:""}</td>
         <td class="mono" data-l="Tel.">
           <a href="tel:+55${d.tel}">${fmtTel(d.tel)}</a>
@@ -637,7 +685,7 @@ function dados(){
     (!coo||C[+coo].secs.includes(d.sec)) &&
     (!sec||d.sec===sec) &&
     (!esc||(esc==="none"?!d.esc:d.esc===esc)) &&
-    (!st||(st==="pres"?!!P[d.tit]:!P[d.tit])) &&
+    (!st||(st==="pres"?!!P[d.id]:!P[d.id])) &&
     terms.every(t=>norm(d.nome).includes(t))
   );
   const partes=[];
@@ -649,9 +697,9 @@ function dados(){
   const groups=[];
   SECS.forEach(s=>{
     const rows=base.filter(d=>d.sec===s); if(!rows.length) return;
-    groups.push({s,e:rows[0].esc,rows,pres:rows.filter(d=>P[d.tit]).length});
+    groups.push({s,e:rows[0].esc,rows,pres:rows.filter(d=>P[d.id]).length});
   });
-  const nPres=base.filter(d=>P[d.tit]).length;
+  const nPres=base.filter(d=>P[d.id]).length;
   return {groups,total:base.length,nPres,nAus:base.length-nPres,filtro:partes.join(" · "),quando:agoraTxt()};
 }
 function fechar(){document.getElementById("imgModal").classList.remove("open");}
@@ -792,7 +840,7 @@ async function gerarImagem(){
         c.fillStyle="#44515c"; c.font="28px "+F;
         c.fillText(`Coordenação: ${coordTxt(b.g.s)}`,PAD,yb+124);
       }else if(b.type==="p"){
-        const p=P[b.d.tit], col=p?OK:NO;
+        const p=P[b.d.id], col=p?OK:NO;
         c.fillStyle=p?OKS:NOS; c.fillRect(PAD-16,yb+8,W-2*PAD+32,b.h-16);
         c.fillStyle=col; c.fillRect(PAD-16,yb+8,10,b.h-16);
         let yy=yb+24; const X=PAD+16;
